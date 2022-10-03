@@ -24,7 +24,7 @@
 
         public void attack()
         {
-
+            Laser laser = new Laser(PositionX + 2, PositionY + 5);
         }
 
         public void goRight()
