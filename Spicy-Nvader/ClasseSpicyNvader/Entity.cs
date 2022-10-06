@@ -21,9 +21,9 @@ namespace ClasseSpicyNvader
         public int PositionY { get => positionY; set => positionY = value; }
         public byte Life { get => life; set => life = value; }
 
-        public void draw()
+        public string draw()
         {
-            Console.Write(Skin);
+            return skin;
         }
     }
 }
