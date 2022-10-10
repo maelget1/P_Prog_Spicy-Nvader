@@ -2,12 +2,15 @@
 {
     public class Player : Entity
     {
+
         public string name;
 
         private int score;
 
         public Player(string name, int score, int positionX, int positionY, byte life)
         {
+            Skin = @"                 ¦        ▄        ¦       ███       ¦  ▄███████████▄  ¦  █████████████  ¦  █████████████  ¦                 ";
+
             this.name = name;
 
             Score = score;
@@ -17,7 +20,7 @@
             PositionY = positionY;
 
             Life = life;
-            
+
         }
 
         public int Score { get => score; set => score = value; }
@@ -34,7 +37,7 @@
 
         public void goLeft()
         {
-            if(PositionX == 0)
+            if (PositionX == 0)
             {
                 throw new Exception("Erreur vous êtes le plus à gauche possible");
             }
@@ -48,5 +51,12 @@
         {
             Life -= 1;
         }
+
+        public void shot()
+        {
+
+        }
+
+
     }
 }

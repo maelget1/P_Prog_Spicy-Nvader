@@ -23,6 +23,8 @@ namespace ClasseSpicyNvader
 
         public void draw()
         {
+            skin.Split('¦');
+            Console.SetCursorPosition(PositionX, PositionY);
             Console.Write(Skin);
         }
     }
