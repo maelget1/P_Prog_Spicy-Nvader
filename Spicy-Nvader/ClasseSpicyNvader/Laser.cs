@@ -14,5 +14,15 @@ namespace ClasseSpicyNvader
 
             PositionY = positionY;
         }
+
+        public void moveAlien()
+        {
+            PositionY++;
+        }
+
+        public void movePlayer()
+        {
+            PositionY--;
+        }
     }
 }

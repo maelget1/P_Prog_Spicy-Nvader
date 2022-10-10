@@ -21,11 +21,15 @@ namespace ClasseSpicyNvader
         public int PositionY { get => positionY; set => positionY = value; }
         public byte Life { get => life; set => life = value; }
 
-        public void draw()
+        public string draw()
         {
+<<<<<<< HEAD
             skin.Split('¦');
             Console.SetCursorPosition(PositionX, PositionY);
             Console.Write(Skin);
+=======
+            return skin;
+>>>>>>> 594d5418a18e698d886166f3267795a7e9c9652c
         }
     }
 }
