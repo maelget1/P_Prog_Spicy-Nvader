@@ -27,7 +27,7 @@ namespace ClasseSpicyNvader
             string[] subs = skin.Split('¦');
             foreach(string s in subs)
             {
-                Console.SetCursorPosition(PositionX, PositionY+compteur);
+                Console.SetCursorPosition(PositionX, PositionY + compteur);
                 Console.Write(s);
                 compteur++;
             }

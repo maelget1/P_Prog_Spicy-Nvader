@@ -9,7 +9,7 @@
 
         public Player(string name, int score, int positionX, int positionY, byte life)
         {
-            Skin = @"        ▄        ¦       ███       ¦  ▄███████████▄  ¦  █████████████  ¦  █████████████  ¦                 ";
+            Skin = @"        ▄        ¦       ███       ¦  ▄███████████▄  ¦  █████████████  ¦  █████████████  ";
 
             this.name = name;
 
@@ -28,7 +28,6 @@
         public void Attack()
         {
             Laser laser = new Laser(PositionX + 8, PositionY-1);
-            laser.Draw();
             laser.MovePlayer();
         }
 
