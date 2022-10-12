@@ -17,7 +17,7 @@ namespace ClasseSpicyNvader
             Life = life;
         }
 
-        public void takeDamage()
+        public void TakeDamage()
         {
             Life -= 1;
         }

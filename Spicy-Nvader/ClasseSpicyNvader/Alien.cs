@@ -15,7 +15,7 @@ namespace ClasseSpicyNvader
             PositionY = positionY;
         }
 
-        public void attack()
+        public void Attack()
         {
             Laser laser = new Laser(PositionX, PositionY);
         }

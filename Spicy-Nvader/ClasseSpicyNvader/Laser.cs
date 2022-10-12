@@ -10,19 +10,30 @@ namespace ClasseSpicyNvader
     {
         public Laser(int positionX, int positionY)
         {
+            Skin = "|";
+
             PositionX = positionX;
 
             PositionY = positionY;
         }
 
-        public void moveAlien()
+        public void MoveAlien()
         {
             PositionY++;
         }
 
-        public void movePlayer()
+        public void MovePlayer()
         {
-            PositionY--;
+            while(PositionY > 0)
+            {
+                Draw();
+                Thread.Sleep(50);
+                PositionY--;
+                Console.SetCursorPosition(PositionX, PositionY + 1);
+                Console.Write(" ");
+                
+            }
+            
         }
     }
 }

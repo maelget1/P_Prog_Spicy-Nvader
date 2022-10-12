@@ -15,7 +15,6 @@ Player player;
 
 /////////////////////////////////////////////////////Programme principal/////////////////////////////////////////////////////
 
-<<<<<<< HEAD
 do
 {
     //dimensionne la console
@@ -27,12 +26,9 @@ do
     //efface la console
     Console.Clear();
 
-    //écrit le titre
+
+    //titre
     Console.WriteLine(@"
-=======
-//titre
-Console.Write(@"
->>>>>>> 594d5418a18e698d886166f3267795a7e9c9652c
      _______..______    __    ______ ____    ____      .__   __. ____    ____  ___       _______   _______ .______      
     /       ||   _  \  |  |  /      |\   \  /   /      |  \ |  | \   \  /   / /   \     |       \ |   ____||   _  \     
    |   (----`|  |_)  | |  | |  ,----' \   \/   / ______|   \|  |  \   \/   / /  ^  \    |  .--.  ||  |__   |  |_)  |    
@@ -96,28 +92,28 @@ Console.Write(@"
 ");
 
     //place le curseur à côté du 1 er onglet
-    Console.SetCursorPosition(160, cursorY+1);
+    Console.SetCursorPosition(160, cursorY + 1);
 
     //écrit le curseur
     Console.WriteLine("   ___              ");
 
-    Console.SetCursorPosition(160, cursorY+2);
+    Console.SetCursorPosition(160, cursorY + 2);
 
     Console.WriteLine("  /  /              ");
 
-    Console.SetCursorPosition(160, cursorY+3);
+    Console.SetCursorPosition(160, cursorY + 3);
 
     Console.WriteLine(" /  / ______ ______ ");
 
-    Console.SetCursorPosition(160, cursorY+4);
+    Console.SetCursorPosition(160, cursorY + 4);
 
     Console.WriteLine("<  < |______|______|");
 
-    Console.SetCursorPosition(160, cursorY+5);
+    Console.SetCursorPosition(160, cursorY + 5);
 
     Console.WriteLine(" \\  \\              ");
 
-    Console.SetCursorPosition(160, cursorY+6);
+    Console.SetCursorPosition(160, cursorY + 6);
 
     Console.WriteLine("  \\__\\             ");
 
@@ -142,7 +138,7 @@ Console.Write(@"
         case ConsoleKey.UpArrow:
 
             //si le curseur n'est pas sur le premier choix
-            if(cursorY > 7)
+            if (cursorY > 7)
             {
                 //va sur le choix au dessus
                 cursorY -= 9;
@@ -161,7 +157,7 @@ Console.Write(@"
                 Console.Clear();
 
                 //place le curseur au milieu de l'écran
-                Console.SetCursorPosition(Console.LargestWindowWidth/2, Console.LargestWindowHeight/2);
+                Console.SetCursorPosition(Console.LargestWindowWidth / 2, Console.LargestWindowHeight / 2);
 
                 //demande un pseudo
                 Console.Write("Quel est votre pseudo ? : ");
@@ -176,21 +172,21 @@ Console.Write(@"
                 if (name == "ExcaliBreizh")
                 {
                     //instancie un nouveau joueur avec le nom qu'il a entré
-                     player = new Player(name, 0, 50, 54, 5);
+                    player = new Player(name, 0, 107, 56, 5);
                 }
 
                 //si le pseudo est autres
                 else
                 {
                     //instancie un nouveau joueur avec le nom qu'il a entré
-                    player = new Player(name, 0, 50, 54, 3);
+                    player = new Player(name, 0, 107, 56, 3);
                 }
 
                 //le fait tant que c'est pas fini
                 do
                 {
 
-                    player.draw();
+                    player.Draw();
 
                     //lis les touches cliquées
                     switch (Console.ReadKey().Key)
@@ -199,7 +195,7 @@ Console.Write(@"
                         case ConsoleKey.RightArrow:
 
                             //appele la fonction qui permet d'aller à droite
-                            player.goRight();
+                            player.GoRight();
 
                             //quitte l'action
                             break;
@@ -208,7 +204,7 @@ Console.Write(@"
                         case ConsoleKey.LeftArrow:
 
                             //appelle la fonction pour aller à gauche
-                            player.goLeft();
+                            player.GoLeft();
 
                             //quitte l'action
                             break;
@@ -217,7 +213,7 @@ Console.Write(@"
                         case ConsoleKey.Spacebar:
 
                             //appelle la fonction pour tirer
-                            player.shot();
+                            player.Attack();
 
                             //quitte l'action
                             break;
@@ -225,22 +221,38 @@ Console.Write(@"
                         //si escape
                         case ConsoleKey.Escape:
 
-                            //va faire toute la scène de pause et sauvegarder les variables ( positions ennemis position missiles pv etc...)
+                            Console.Clear();
+
+                            Console.SetCursorPosition(Console.LargestWindowWidth / 2, Console.LargestWindowHeight / 2);
+
+                            Console.Write(@"
+  _______      ___      .___  ___.  _______      ______   ____    ____  _______ .______      
+ /  _____|    /   \     |   \/   | |   ____|    /  __  \  \   \  /   / |   ____||   _  \     
+|  |  __     /  ^  \    |  \  /  | |  |__      |  |  |  |  \   \/   /  |  |__   |  |_)  |    
+|  | |_ |   /  /_\  \   |  |\/|  | |   __|     |  |  |  |   \      /   |   __|  |      /     
+|  |__| |  /  _____  \  |  |  |  | |  |____    |  `--'  |    \    /    |  |____ |  |\  \----.
+ \______| /__/     \__\ |__|  |__| |_______|    \______/      \__/     |_______|| _| `._____|
+                                                                                             
+");
 
                             //quitte l'action
+                            break;
+
+                        default:
                             break;
                     }
                 } while (true);
             }
 
             //si sur l'option "options"
-            else if(cursorY == 16)
+            else if (cursorY == 16)
             {
                 Console.Clear();
             }
 
             //si sur l'option "meilleurs scores"
-            else if (cursorY == 25){
+            else if (cursorY == 25)
+            {
                 Console.Clear();
             }
 
@@ -251,7 +263,7 @@ Console.Write(@"
             }
 
             //si sur l'option "quitter"
-            else if(cursorY == 43)
+            else if (cursorY == 43)
             {
                 Environment.Exit(0);
             }

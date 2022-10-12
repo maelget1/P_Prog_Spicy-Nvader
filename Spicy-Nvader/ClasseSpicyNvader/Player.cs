@@ -9,7 +9,7 @@
 
         public Player(string name, int score, int positionX, int positionY, byte life)
         {
-            Skin = @"                 ¦        ▄        ¦       ███       ¦  ▄███████████▄  ¦  █████████████  ¦  █████████████  ¦                 ";
+            Skin = @"        ▄        ¦       ███       ¦  ▄███████████▄  ¦  █████████████  ¦  █████████████  ¦                 ";
 
             this.name = name;
 
@@ -25,21 +25,30 @@
 
         public int Score { get => score; set => score = value; }
 
-        public void attack()
+        public void Attack()
         {
-            Laser laser = new Laser(PositionX + 2, PositionY + 5);
+            Laser laser = new Laser(PositionX + 8, PositionY-1);
+            laser.Draw();
+            laser.MovePlayer();
         }
 
-        public void goRight()
+        public void GoRight()
         {
-            PositionX++;
+            if(PositionX == 223)
+            {
+                
+            }
+            else
+            {
+                PositionX++;
+            }
         }
 
-        public void goLeft()
+        public void GoLeft()
         {
             if (PositionX == 0)
             {
-                throw new Exception("Erreur vous êtes le plus à gauche possible");
+                
             }
             else
             {
@@ -47,16 +56,9 @@
             }
         }
 
-        public void loseLife()
+        public void LoseLife()
         {
             Life -= 1;
         }
-
-        public void shot()
-        {
-
-        }
-
-
     }
 }
