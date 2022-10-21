@@ -7,8 +7,6 @@
 
         private int score;
 
-        private List<int> bestScore = new List<int>();
-
         public Player(string name, int score, int positionX, int positionY, byte life)
         {
             Skin = @"        ▄        ¦       ███       ¦  ▄███████████▄  ¦  █████████████  ¦  █████████████  ";
@@ -26,8 +24,6 @@
         }
 
         public int Score { get => score; set => score = value; }
-
-        public List<int> BestScore { get => bestScore; set => bestScore = value; }
 
         public void Attack()
         {
@@ -62,11 +58,6 @@
         public void LoseLife()
         {
             Life -= 1;
-        }
-
-        public void AddBestScore()
-        {
-            BestScore.Add(Score);
         }
     }
 }

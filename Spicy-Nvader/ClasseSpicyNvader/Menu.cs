@@ -5,11 +5,16 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace ClasseSpicyNvader
 {
     public class Menu
     {
+        private List<int> bestScore = new List<int>();
+
+        public List<int> BestScore { get => bestScore; set => bestScore = value; }
+
         public void ShowMenu()
         {
             int cursorY = 7;
@@ -199,6 +204,9 @@ namespace ClasseSpicyNvader
 
         public void ShowHighScore()
         {
+            int cursorY = 10;
+            int nbrElements = 10;
+            Console.Clear();
             //écrit l'onglet "meilleurs scores"
             Console.WriteLine(@"
 .___  ___.  _______  __   __       __       _______  __    __  .______          _______.        _______.  ______   ______   .______       _______     _______.
@@ -209,6 +217,26 @@ namespace ClasseSpicyNvader
 |__|  |__| |_______||__| |_______||_______||_______| \______/  | _| `._____|_______/       |_______/     \______| \______/  | _| `._____||_______|_______/    
                                                                                                                                                               
 ");
+            foreach(int elements in BestScore)
+            {
+                Console.SetCursorPosition(10, nbrElements);
+                Console.WriteLine(elements);
+                nbrElements += 10;
+            }
+            //lis les touches cliquées
+            switch (Console.ReadKey().Key)
+            {
+                default:
+                    break;
+                case ConsoleKey.DownArrow:
+                    cursorY += 10;
+                    break;
+            }
+        }
+
+        public void AddBestScore(int score)
+        {
+            BestScore.Add(score);
         }
     }
 }

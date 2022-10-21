@@ -13,6 +13,7 @@ namespace ClasseSpicyNvader
         //////////////////////////////////////////////////variables//////////////////////////////////////////////////
         string name;
         Player player;
+        Menu menu;
 
         public void PlayGame()
         {
@@ -99,7 +100,9 @@ namespace ClasseSpicyNvader
         {
             Console.Clear();
 
-            player.AddBestScore();
+            menu = new Menu();
+
+            menu.AddBestScore(player.Score);
 
             Console.SetCursorPosition(Console.LargestWindowWidth / 2, Console.LargestWindowHeight / 2);
 
@@ -117,7 +120,6 @@ namespace ClasseSpicyNvader
             switch (Console.ReadKey().Key)
             {
                 default:
-                    Menu menu = new Menu();
                     menu.ShowMenu();
                     break;
             }
