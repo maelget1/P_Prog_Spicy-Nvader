@@ -14,6 +14,9 @@ namespace ClasseSpicyNvader
         private List<int> bestScore = new List<int>();
 
         public List<int> BestScore { get => bestScore; set => bestScore = value; }
+        public bool Difficulty { get => difficulty; set => difficulty = value; }
+
+        private bool difficulty;
 
         public void ShowMenu()
         {
@@ -163,7 +166,7 @@ namespace ClasseSpicyNvader
                         //si sur l'option "options"
                         else if (cursorY == 16)
                         {
-                            Console.Clear();
+                            ShowSettings();
                         }
 
                         //si sur l'option "meilleurs scores"
@@ -237,6 +240,11 @@ namespace ClasseSpicyNvader
         public void AddBestScore(int score)
         {
             BestScore.Add(score);
+        }
+
+        public void ShowSettings()
+        {
+            Difficulty = false;
         }
     }
 }

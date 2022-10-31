@@ -12,11 +12,18 @@ namespace ClasseSpicyNvader
     {
         //////////////////////////////////////////////////variables//////////////////////////////////////////////////
         string name;
+        int numberEnnemiesX;
+        int numberEnnemiesY;
+        int alienX;
+        int alienY;
         Player player;
-        Menu menu;
+        Menu menu = new Menu();
         Wall wall1 = new Wall();
         Wall wall2 = new Wall();
         Wall wall3 = new Wall();
+        List<Alien> ennemies = new List<Alien>();
+
+        Timer timer;
 
         public void PlayGame()
         {
@@ -48,6 +55,15 @@ namespace ClasseSpicyNvader
                 //instancie un nouveau joueur avec le nom qu'il a entré
                 player = new Player(name, 0, 107, 56, 3);
             }
+
+            InitiateAlien();
+
+            foreach(Alien elements in ennemies)
+            {
+                elements.Draw();
+            }
+
+            timer = new Timer(new TimerCallback(Movement));
 
             wall1.DrawOnce(30, 50);
             wall2.DrawOnce(105, 50);
@@ -106,8 +122,6 @@ namespace ClasseSpicyNvader
         {
             Console.Clear();
 
-            menu = new Menu();
-
             menu.AddBestScore(player.Score);
 
             Console.SetCursorPosition(Console.LargestWindowWidth / 2, Console.LargestWindowHeight / 2);
@@ -131,6 +145,54 @@ namespace ClasseSpicyNvader
             }
         }
 
+        public void InitiateAlien()
+        {
+            if (menu.Difficulty == false)
+            {
+                numberEnnemiesX = 6;
+                numberEnnemiesY = 4;
+            }
+            else
+            {
+                numberEnnemiesX = 10;
+                numberEnnemiesY = 5;
+            }
+
+            for (int X = 0; X < numberEnnemiesX; X++)
+            {
+                for (int Y = 0; Y < numberEnnemiesY; Y++)
+                {
+
+                    Alien alien = new Alien(alienX, alienY);
+
+                    alien.PositionX = X * alien.Width + 5;
+
+                    alien.PositionY = Y * alien.Height + 1;
+
+                    ennemies.Add(alien);
+                }
+            }
+        }
+
+        public void Movement(object s)
+        {
+
+        }
+
+        public void AlienLeft()
+        {
+            Console.MoveBufferArea();
+        }
+
+        public void AlienRight()
+        {
+            Console.MoveBufferArea(alien.PositionX, PositionY, Width, Height, ++PositionX, PositionY);
+        }
+
+        public void AlienDown()
+        {
+            Console.MoveBufferArea();
+        }
         
     }
 }
