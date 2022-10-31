@@ -13,6 +13,12 @@ namespace ClasseSpicyNvader
             PositionX = positionX;
 
             PositionY = positionY;
+
+            Skin = @"                      ▀▄   ▄▀        ▄█▀███▀█▄       █▀███████▀█      █ █▀▀▀▀▀█ █         ▀▀ ▀▀                       ";
+
+            Width = 17;
+
+            Height = 7;
         }
 
         public void Attack()

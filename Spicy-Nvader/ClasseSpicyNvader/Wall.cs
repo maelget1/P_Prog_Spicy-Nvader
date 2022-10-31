@@ -8,19 +8,19 @@ namespace ClasseSpicyNvader
 {
     internal class Wall : Entity
     {
-        public Wall(int positionX, int positionY, byte life)
+        public Wall()
         {
-            PositionX = positionX;
+            PositionX = 30;
 
-            PositionY = positionY;
+            PositionY = 50;
 
-            Life = life;
+            Life = 3;
 
-            Skin = @"";
+            Skin = @"████████████████████¦████████████████████";
 
-            Width = ;
+            Width = 20;
 
-            Height = ;
+            Height = 2;
         }
 
         public void TakeDamage()

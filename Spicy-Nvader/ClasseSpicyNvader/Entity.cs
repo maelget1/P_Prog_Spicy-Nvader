@@ -39,5 +39,18 @@ namespace ClasseSpicyNvader
             }
             return skin;
         }
+
+        public string DrawOnce(int x, int y)
+        {
+            int compteur = 0;
+            string[] subs = skin.Split('¦');
+            foreach (string s in subs)
+            {
+                Console.SetCursorPosition(x, y + compteur);
+                Console.Write(s);
+                compteur++;
+            }
+            return skin;
+        }
     }
 }

@@ -14,6 +14,9 @@ namespace ClasseSpicyNvader
         string name;
         Player player;
         Menu menu;
+        Wall wall1 = new Wall();
+        Wall wall2 = new Wall();
+        Wall wall3 = new Wall();
 
         public void PlayGame()
         {
@@ -46,10 +49,13 @@ namespace ClasseSpicyNvader
                 player = new Player(name, 0, 107, 56, 3);
             }
 
+            wall1.DrawOnce(30, 50);
+            wall2.DrawOnce(105, 50);
+            wall3.DrawOnce(180, 50);
+
             //le fait tant que c'est pas fini
             do
             {
-
                 player.Draw();
 
                 //lis les touches cliquées
