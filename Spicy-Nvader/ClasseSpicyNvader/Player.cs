@@ -27,8 +27,7 @@
 
         public void Attack()
         {
-            Laser laser = new Laser(PositionX + 8, PositionY-1);
-            laser.MovePlayer();
+            Laser laser = new Laser(PositionX + 8, PositionY - 1);
         }
 
         public void GoRight()

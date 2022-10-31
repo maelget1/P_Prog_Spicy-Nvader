@@ -106,7 +106,7 @@ namespace ClasseSpicyNvader
 
             Console.SetCursorPosition(Console.LargestWindowWidth / 2, Console.LargestWindowHeight / 2);
 
-            Console.Write(@"
+            Console.Write(@"                                                                 
   _______      ___      .___  ___.  _______      ______   ____    ____  _______ .______      
  /  _____|    /   \     |   \/   | |   ____|    /  __  \  \   \  /   / |   ____||   _  \     
 |  |  __     /  ^  \    |  \  /  | |  |__      |  |  |  |  \   \/   /  |  |__   |  |_)  |    

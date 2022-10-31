@@ -8,13 +8,25 @@ namespace ClasseSpicyNvader
 {
     public class Laser : Entity
     {
+        private Timer timer;
+        
         public Laser(int positionX, int positionY)
         {
+            timer = new Timer(new TimerCallback(MovePlayer));
+
+            Width = 1;
+
+            Height = 1;
+
             Skin = "|";
+
+            timer.Change(0, 50);
 
             PositionX = positionX;
 
             PositionY = positionY;
+
+            Draw();
         }
 
         public void MoveAlien()
@@ -22,18 +34,17 @@ namespace ClasseSpicyNvader
             PositionY++;
         }
 
-        public void MovePlayer()
+        private void MovePlayer(object state)
         {
-            while(PositionY > 0)
+            if(PositionY > 0)
             {
-                Draw();
-                Thread.Sleep(50);
-                PositionY--;
-                Console.SetCursorPosition(PositionX, PositionY + 1);
-                Console.Write(" ");
+                Console.MoveBufferArea(PositionX, PositionY, Width, Height, PositionX, --PositionY);
+            }
+            else
+            {
                 
             }
-            
+             
         }
     }
 }

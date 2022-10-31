@@ -16,10 +16,16 @@ namespace ClasseSpicyNvader
 
         private byte life;
 
+        private int width;
+
+        private int height;
+
         public string Skin { get => skin; set => skin = value; }
         public int PositionX { get => positionX; set => positionX = value; }
         public int PositionY { get => positionY; set => positionY = value; }
         public byte Life { get => life; set => life = value; }
+        public int Width { get => width; set => width = value; }
+        public int Height { get => height; set => height = value; }
 
         public string Draw()
         {

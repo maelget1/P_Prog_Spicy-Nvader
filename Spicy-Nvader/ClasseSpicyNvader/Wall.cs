@@ -15,6 +15,12 @@ namespace ClasseSpicyNvader
             PositionY = positionY;
 
             Life = life;
+
+            Skin = @"";
+
+            Width = ;
+
+            Height = ;
         }
 
         public void TakeDamage()
