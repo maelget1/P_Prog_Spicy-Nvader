@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using WMPLib;
 
 namespace ClasseSpicyNvader
 {
@@ -16,6 +17,9 @@ namespace ClasseSpicyNvader
         int numberEnnemiesY;
         int alienX;
         int alienY;
+        int cursorBreak;
+        bool quitOrStart;
+        object s;
         Player player;
         Menu menu = new Menu();
         Wall wall1 = new Wall();
@@ -50,6 +54,14 @@ namespace ClasseSpicyNvader
             }
 
             //si le pseudo est autres
+            else if(name == "Saul")
+            {
+                EasterEgg();
+
+                //instancie un nouveau joueur avec le nom qu'il a entré
+                player = new Player(name, 0, 107, 56, 3);
+            }
+
             else
             {
                 //instancie un nouveau joueur avec le nom qu'il a entré
@@ -58,12 +70,22 @@ namespace ClasseSpicyNvader
 
             InitiateAlien();
 
+            GameMusic();
+
             foreach(Alien elements in ennemies)
             {
                 elements.Draw();
-            }
-
-            timer = new Timer(new TimerCallback(Movement));
+                int minX = ennemies.Min(elements => elements.PositionX);
+                int bigX = ennemies.Max(elements => elements.PositionX);
+                bigX = ennemies.Max(elements => elements.Width) + bigX;
+                int minY = ennemies.Max(elements => elements.PositionY);
+                int bigY = ennemies.Max(elements => elements.PositionY);
+                bigY = ennemies.Max(elements => elements.Height) + bigY;
+                elements.NumberAlienX = bigX;
+                elements.NumberAlienY = bigY;
+                timer = new Timer(new TimerCallback(elements.Move));
+                timer.Change(0, 200);
+            }    
 
             wall1.DrawOnce(30, 50);
             wall2.DrawOnce(105, 50);
@@ -107,7 +129,7 @@ namespace ClasseSpicyNvader
                     //si escape
                     case ConsoleKey.Escape:
 
-                        GameOver();
+                        Break();
 
                         //quitte l'action
                         break;
@@ -124,7 +146,7 @@ namespace ClasseSpicyNvader
 
             menu.AddBestScore(player.Score);
 
-            Console.SetCursorPosition(Console.LargestWindowWidth / 2, Console.LargestWindowHeight / 2);
+            Console.SetCursorPosition(Console.LargestWindowWidth / 2,0);
 
             Console.Write(@"                                                                 
   _______      ___      .___  ___.  _______      ______   ____    ____  _______ .______      
@@ -144,6 +166,79 @@ namespace ClasseSpicyNvader
                     break;
             }
         }
+
+        public void Break()
+        {
+            cursorBreak = 20;
+
+            quitOrStart = false;
+
+            do
+            {
+                Console.Clear();
+
+                Console.SetCursorPosition(Console.LargestWindowWidth / 2, 0);
+
+                Console.Write(@"
+.______   .______       _______     ___       __  ___ 
+|   _  \  |   _  \     |   ____|   /   \     |  |/  / 
+|  |_)  | |  |_)  |    |  |__     /  ^  \    |  '  /  
+|   _  <  |      /     |   __|   /  /_\  \   |    <   
+|  |_)  | |  |\  \----.|  |____ /  _____  \  |  .  \  
+|______/  | _| `._____||_______/__/     \__\ |__|\__\ 
+                                                      
+");
+                Console.SetCursorPosition(0, 20);
+
+                Console.WriteLine("Reprendre");
+
+                Console.SetCursorPosition(0, 40);
+
+                Console.WriteLine("Quitter");
+
+                Console.SetCursorPosition(20, cursorBreak);
+
+                Console.Write("<--");
+
+                //lis les touches cliquées
+                switch (Console.ReadKey().Key)
+                {
+                    case ConsoleKey.DownArrow:
+                        if (cursorBreak == 20)
+                        {
+                            cursorBreak += 20;
+                        }
+                        break;
+                    case ConsoleKey.UpArrow:
+                        if (cursorBreak == 40)
+                        {
+                            cursorBreak -= 20;
+                        }
+                        break;
+                    case ConsoleKey.Enter:
+                        if (cursorBreak == 40)
+                        {
+                            GameOver();
+                            quitOrStart = true;
+                        }
+                        else if (cursorBreak == 20)
+                        {
+                            Resume();
+                            quitOrStart= true;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } while (quitOrStart == false);
+            
+        }
+
+        public void Resume()
+        {
+
+        }
+
 
         public void InitiateAlien()
         {
@@ -179,19 +274,16 @@ namespace ClasseSpicyNvader
 
         }
 
-        public void AlienLeft()
+        public void GameMusic()
         {
-            Console.MoveBufferArea();
+            WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();
+            wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/star wars cantina.mp3";
         }
 
-        public void AlienRight()
+        public void EasterEgg()
         {
-            Console.MoveBufferArea(alien.PositionX, PositionY, Width, Height, ++PositionX, PositionY);
-        }
-
-        public void AlienDown()
-        {
-            Console.MoveBufferArea();
+            WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();
+            wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/Better Call Saul Theme by Little Barrie Full Orignal Song.mp3";
         }
         
     }

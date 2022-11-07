@@ -202,6 +202,24 @@ namespace ClasseSpicyNvader
 
         public void ShowAbout()
         {
+            Console.Clear();
+
+            Console.WriteLine(@"
+     ___         .______   .______        ______   .______     ______        _______.
+    /   \        |   _  \  |   _  \      /  __  \  |   _  \   /  __  \      /       |
+   /  ^  \       |  |_)  | |  |_)  |    |  |  |  | |  |_)  | |  |  |  |    |   (----`
+  /  /_\  \      |   ___/  |      /     |  |  |  | |   ___/  |  |  |  |     \   \    
+ /  _____  \     |  |      |  |\  \----.|  `--'  | |  |      |  `--'  | .----)   |   
+/__/     \__\    | _|      | _| `._____| \______/  | _|       \______/  |_______/    
+                                                                                     
+");
+            Console.WriteLine("Auteur: Maël Gétain\nSpicy-Nvader est un jeu qui me sers de projet programmation orienté objet. Le projet se déroule d'août à décembre 2022.");
+            Console.Write("Appuyez sur n'importe quelle touche pour quitter");
+            switch (Console.ReadKey().Key)
+            {
+                default:
+                    break;
+            }
 
         }
 
