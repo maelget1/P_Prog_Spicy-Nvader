@@ -25,9 +25,10 @@
 
         public int Score { get => score; set => score = value; }
 
-        public void Attack()
+        public Laser Attack()
         {
             Laser laser = new Laser(PositionX + 8, PositionY - 1);
+            return laser;
         }
 
         public void GoRight()

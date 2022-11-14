@@ -6,16 +6,22 @@ using System.Threading.Tasks;
 
 namespace ClasseSpicyNvader
 {
-    internal class Alien : Entity
+    public class Alien : Entity
     {
         private Timer timer;
 
-        private int numberAlienX;
+        private int bigX;
 
-        private int numberAlienY;
+        private int bigY;
 
-        public int NumberAlienY { get => numberAlienY; set => numberAlienY = value; }
-        public int NumberAlienX { get => numberAlienX; set => numberAlienX = value; }
+        private int minY;
+
+        private int minX;
+
+        public int BigY { get => bigY; set => bigY = value; }
+        public int BigX { get => bigX; set => bigX = value; }
+        public int MinX { get => minX; set => minX = value; }
+        public int MinY { get => minY; set => minY = value; }
 
         public Alien(int positionX, int positionY)
         {
@@ -25,9 +31,9 @@ namespace ClasseSpicyNvader
 
             Skin = @"     ▀▄   ▄▀    ¦    ▄█▀███▀█▄    ¦   █▀███████▀█   ¦   █ █▀▀▀▀▀█ █   ¦      ▀▀ ▀▀      ";
 
-            Width = 17;
+            Width = 16;
 
-            Height = 7;
+            Height = 5;
         }
 
         public void Attack()
@@ -37,9 +43,9 @@ namespace ClasseSpicyNvader
 
         public void Move(object state)
         {
-            if (PositionX + NumberAlienX < 330 && NumberAlienY % 2 == 1)
+            if (MinX <= 300 - (Width * 6) && BigY % 2 == 0)
             {
-                if(PositionX + NumberAlienX == 330)
+                if (MinX == 300 - (Width * 6))
                 {
                     MoveDown();
                 }
@@ -48,13 +54,13 @@ namespace ClasseSpicyNvader
                     MoveRight();
                 }
             }
-            if(NumberAlienY % 2 == 0)
+            if (BigX >= Width * 6 && BigY % 2 == 1)
             {
-                if(PositionX == 0)
+                if (MinX == 0)
                 {
                     MoveDown();
                 }
-                else if(PositionX + NumberAlienX < 330)
+                else
                 {
                     MoveLeft();
                 }
@@ -74,6 +80,11 @@ namespace ClasseSpicyNvader
         public void MoveDown()
         {
             Console.MoveBufferArea(PositionX, PositionY, Width, Height, PositionX, ++PositionY);
+        }
+
+        public void Die()
+        {
+
         }
     }
 }

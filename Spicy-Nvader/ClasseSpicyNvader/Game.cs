@@ -19,18 +19,19 @@ namespace ClasseSpicyNvader
         int alienY;
         int cursorBreak;
         bool quitOrStart;
-        object s;
         Player player;
         Menu menu = new Menu();
         Wall wall1 = new Wall();
         Wall wall2 = new Wall();
         Wall wall3 = new Wall();
         List<Alien> ennemies = new List<Alien>();
-
-        Timer timer;
+        List<Laser> lasers = new List<Laser>();
+        Timer timer;       
 
         public void PlayGame()
         {
+            
+
             //efface la console
             Console.Clear();
 
@@ -67,25 +68,15 @@ namespace ClasseSpicyNvader
                 //instancie un nouveau joueur avec le nom qu'il a entré
                 player = new Player(name, 0, 107, 56, 3);
             }
+            
+            InitiateAbout(player);
 
             InitiateAlien();
 
-            GameMusic();
+            timer = new Timer(new TimerCallback(ActionEnemies));
+            timer.Change(0, 200);
 
-            foreach(Alien elements in ennemies)
-            {
-                elements.Draw();
-                int minX = ennemies.Min(elements => elements.PositionX);
-                int bigX = ennemies.Max(elements => elements.PositionX);
-                bigX = ennemies.Max(elements => elements.Width) + bigX;
-                int minY = ennemies.Max(elements => elements.PositionY);
-                int bigY = ennemies.Max(elements => elements.PositionY);
-                bigY = ennemies.Max(elements => elements.Height) + bigY;
-                elements.NumberAlienX = bigX;
-                elements.NumberAlienY = bigY;
-                timer = new Timer(new TimerCallback(elements.Move));
-                timer.Change(0, 200);
-            }    
+            GameMusic();
 
             wall1.DrawOnce(30, 50);
             wall2.DrawOnce(105, 50);
@@ -121,7 +112,7 @@ namespace ClasseSpicyNvader
                     case ConsoleKey.Spacebar:
 
                         //appelle la fonction pour tirer
-                        player.Attack();
+                        lasers.Add(player.Attack());
 
                         //quitte l'action
                         break;
@@ -138,6 +129,51 @@ namespace ClasseSpicyNvader
                         break;
                 }
             } while (true);
+        }
+
+        private void ActionEnemies(object state)
+        {
+            int minX = ennemies.Min(e => e.PositionX);
+            int bigX = ennemies.Max(elements => elements.PositionX);
+            bigX = ennemies.Max(elements => elements.Width) + bigX;
+            int minY = ennemies.Max(elements => elements.PositionY);
+            int bigY = ennemies.Max(elements => elements.PositionY);
+            bigY = ennemies.Max(elements => elements.Height) + bigY;
+            foreach (Alien elements in ennemies.ToArray())
+            {
+                
+                elements.Draw();
+                if (minX <= 240 - (elements.Width * 6) && bigY % 2 == 1)
+                {
+                    if (minX == 240 - (elements.Width * 6))
+                    {
+                        elements.MoveDown();
+                    }
+                    else
+                    {
+                        elements.MoveRight();
+                    }
+                }
+                else if (bigX >=elements.Width * 6 && bigY % 2 == 0)
+                {
+                    if (minX == 0)
+                    {
+                        elements.MoveDown();
+                    }
+                    else
+                    {
+                        elements.MoveLeft();
+                    }
+                }
+                foreach (Laser laser in lasers.ToArray())
+                {
+                    if (elements.PositionX <= laser.PositionX && elements.PositionX + elements.Width >= laser.PositionX && elements.PositionY + elements.Height == laser.PositionY)
+                    {
+                        ennemies.Remove(elements);
+                        lasers.Remove(laser);
+                    }
+                }
+            }
         }
 
         public void GameOver()
@@ -269,11 +305,6 @@ namespace ClasseSpicyNvader
             }
         }
 
-        public void Movement(object s)
-        {
-
-        }
-
         public void GameMusic()
         {
             WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();
@@ -284,7 +315,21 @@ namespace ClasseSpicyNvader
         {
             WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();
             wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/Better Call Saul Theme by Little Barrie Full Orignal Song.mp3";
+        }  
+
+        public void InitiateAbout(Player player)
+        {
+            Console.Write("Vie: ");
+            for(int nbrLife = 0; nbrLife < player.Life; nbrLife++)
+            {
+                Console.Write("♥");
+            }
+            Console.Write("\t\t\t\t\t\t\t\t\t\t\t\t\t Spicy Nvaders \t\t\t\t\t\t\t\t\t\t\t\t\t Score: " + player.Score + "\n");
         }
-        
+
+        public void AlienDie(Alien alien)
+        {
+            ennemies.Remove(alien);
+        }
     }
 }
