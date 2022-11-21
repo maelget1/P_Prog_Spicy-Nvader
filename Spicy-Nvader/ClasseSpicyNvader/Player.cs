@@ -21,6 +21,9 @@
 
             Life = life;
 
+            Width = Skin.Split("¦")[0].Length;
+
+            Height = Skin.Split("¦").Length;
         }
 
         public int Score { get => score; set => score = value; }
@@ -33,31 +36,28 @@
 
         public void GoRight()
         {
-            if(PositionX == 223)
+            if(PositionX != 223)
             {
-                
-            }
-            else
-            {
-                PositionX++;
+                Console.MoveBufferArea(PositionX, PositionY, Width, Height, ++PositionX, PositionY);
             }
         }
 
         public void GoLeft()
         {
-            if (PositionX == 0)
+            if (PositionX != 0)
             {
-                
-            }
-            else
-            {
-                PositionX--;
+                Console.MoveBufferArea(PositionX, PositionY, Width, Height, --PositionX, PositionY);
             }
         }
 
         public void LoseLife()
         {
             Life -= 1;
+        }
+
+        public void AddScore()
+        {
+            Score += 100;
         }
     }
 }

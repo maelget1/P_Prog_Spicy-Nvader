@@ -12,15 +12,11 @@ namespace ClasseSpicyNvader
         
         public Laser(int positionX, int positionY)
         {
-            timer = new Timer(new TimerCallback(MovePlayer));
-
             Width = 1;
 
             Height = 1;
 
             Skin = "|";
-
-            timer.Change(0, 50);
 
             PositionX = positionX;
 
@@ -34,17 +30,22 @@ namespace ClasseSpicyNvader
             PositionY++;
         }
 
-        private void MovePlayer(object state)
+        public void MovePlayer()
         {
-            if(PositionY > 0)
+            if(PositionY > 1)
             {
                 Console.MoveBufferArea(PositionX, PositionY, Width, Height, PositionX, --PositionY);
             }
-            else
+            else if(PositionY == 1)
             {
-                
+                Erase();
             }
              
+        }
+
+        public void Erase()
+        {
+            Console.MoveBufferArea(0, 52, Width, Height, PositionX, PositionY);
         }
     }
 }

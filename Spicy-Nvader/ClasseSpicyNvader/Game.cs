@@ -21,12 +21,15 @@ namespace ClasseSpicyNvader
         bool quitOrStart;
         Player player;
         Menu menu = new Menu();
-        Wall wall1 = new Wall();
-        Wall wall2 = new Wall();
-        Wall wall3 = new Wall();
+        Wall wall1 = new Wall(30, 50);
+        Wall wall2 = new Wall(100, 50);
+        Wall wall3 = new Wall(150, 50);
         List<Alien> ennemies = new List<Alien>();
         List<Laser> lasers = new List<Laser>();
-        Timer timer;       
+        List<Wall> walls = new List<Wall>();
+        Timer timerAlien;
+        Timer timerLaser;
+        Timer timerWall;
 
         public void PlayGame()
         {
@@ -68,25 +71,26 @@ namespace ClasseSpicyNvader
                 //instancie un nouveau joueur avec le nom qu'il a entré
                 player = new Player(name, 0, 107, 56, 3);
             }
-            
-            InitiateAbout(player);
 
             InitiateAlien();
 
-            timer = new Timer(new TimerCallback(ActionEnemies));
-            timer.Change(0, 200);
+            InitiateWall();
+
+            Stats(player);
+
+            timerAlien = new Timer(new TimerCallback(ActionEnemies));
+            timerAlien.Change(0, 200);
+
+            timerLaser = new Timer(new TimerCallback(LaserMovementPlayer));
+            timerLaser.Change(0, 50);
 
             GameMusic();
 
-            wall1.DrawOnce(30, 50);
-            wall2.DrawOnce(105, 50);
-            wall3.DrawOnce(180, 50);
+            player.Draw();
 
             //le fait tant que c'est pas fini
             do
-            {
-                player.Draw();
-
+            { 
                 //lis les touches cliquées
                 switch (Console.ReadKey().Key)
                 {
@@ -128,54 +132,84 @@ namespace ClasseSpicyNvader
                     default:
                         break;
                 }
+
+               
+
             } while (true);
         }
 
         private void ActionEnemies(object state)
         {
-            int minX = ennemies.Min(e => e.PositionX);
+            int minX = ennemies.Min(elements => elements.PositionX);
             int bigX = ennemies.Max(elements => elements.PositionX);
             bigX = ennemies.Max(elements => elements.Width) + bigX;
             int minY = ennemies.Max(elements => elements.PositionY);
             int bigY = ennemies.Max(elements => elements.PositionY);
             bigY = ennemies.Max(elements => elements.Height) + bigY;
-            foreach (Alien elements in ennemies.ToArray())
+            foreach (Alien element in ennemies.ToArray())
             {
                 
-                elements.Draw();
-                if (minX <= 240 - (elements.Width * 6) && bigY % 2 == 1)
+                element.Draw();
+                if (minX <= 240 - (element.Width * 6) && bigY % 2 == 1)
                 {
-                    if (minX == 240 - (elements.Width * 6))
+                    if (minX == 240 - (element.Width * 6))
                     {
-                        elements.MoveDown();
+                        element.MoveDown();
                     }
                     else
                     {
-                        elements.MoveRight();
+                        element.MoveRight();
                     }
                 }
-                else if (bigX >=elements.Width * 6 && bigY % 2 == 0)
+                else if (bigX >=element.Width * 6 && bigY % 2 == 0)
                 {
                     if (minX == 0)
                     {
-                        elements.MoveDown();
+                        element.MoveDown();
                     }
                     else
                     {
-                        elements.MoveLeft();
+                        element.MoveLeft();
                     }
                 }
                 foreach (Laser laser in lasers.ToArray())
                 {
-                    if (elements.PositionX <= laser.PositionX && elements.PositionX + elements.Width >= laser.PositionX && elements.PositionY + elements.Height == laser.PositionY)
+                    if (element.PositionX <= laser.PositionX && element.PositionX + element.Width >= laser.PositionX && element.PositionY <= laser.PositionY && element.PositionY + element.Height >= laser.PositionY)
                     {
-                        ennemies.Remove(elements);
-                        lasers.Remove(laser);
-                    }
+                        KillAlien(laser, element);
+                    }                
                 }
             }
         }
 
+        private void LaserMovementPlayer(object state)
+        {
+            foreach(Laser laser in lasers.ToArray())
+            {
+                laser.MovePlayer();
+                foreach(Wall wall in walls.ToArray())
+                {
+                    if (wall.PositionX <= laser.PositionX && wall.PositionX + wall.Width >= laser.PositionX && wall.PositionY <= laser.PositionY && wall.PositionY + wall.Height >= laser.PositionY)
+                    {
+                        lasers.Remove(laser);
+                        laser.Erase();
+                        wall.TakeDamage(walls);
+                        if(wall.Life == 2)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            wall.Draw();
+                            Console.ResetColor();
+                        }
+                        if(wall.Life == 1)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            wall.Draw();
+                            Console.ResetColor();
+                        }
+                    }
+                }
+            }
+        }
         public void GameOver()
         {
             Console.Clear();
@@ -272,7 +306,7 @@ namespace ClasseSpicyNvader
 
         public void Resume()
         {
-
+            
         }
 
 
@@ -315,21 +349,40 @@ namespace ClasseSpicyNvader
         {
             WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();
             wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/Better Call Saul Theme by Little Barrie Full Orignal Song.mp3";
-        }  
+        }
 
-        public void InitiateAbout(Player player)
+        private void KillAlien(Laser laser, Alien alien)
         {
+            ennemies.Remove(alien);
+            lasers.Remove(laser);
+            laser.Erase();
+            alien.Erase();
+            player.AddScore();
+            Stats(player);
+        }
+
+        private void Stats(Player player)
+        {
+            Console.SetCursorPosition(0, 0);
             Console.Write("Vie: ");
-            for(int nbrLife = 0; nbrLife < player.Life; nbrLife++)
+            for (int nbrLife = 0; nbrLife < player.Life; nbrLife++)
             {
                 Console.Write("♥");
             }
-            Console.Write("\t\t\t\t\t\t\t\t\t\t\t\t\t Spicy Nvaders \t\t\t\t\t\t\t\t\t\t\t\t\t Score: " + player.Score + "\n");
+            Console.SetCursorPosition(108, 0);
+            Console.Write("Spicy Nvaders");
+            Console.SetCursorPosition(220, 0);
+            Console.Write("Score: " + player.Score);
         }
 
-        public void AlienDie(Alien alien)
+        public void InitiateWall()
         {
-            ennemies.Remove(alien);
+            wall1.Draw();
+            wall2.Draw();
+            wall3.Draw();
+            walls.Add(wall1);
+            walls.Add(wall2);
+            walls.Add(wall3);
         }
     }
 }

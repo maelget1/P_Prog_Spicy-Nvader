@@ -6,26 +6,39 @@ using System.Threading.Tasks;
 
 namespace ClasseSpicyNvader
 {
-    internal class Wall : Entity
+    public class Wall : Entity
     {
-        public Wall()
+        public Wall(int x, int y)
         {
-            PositionX = 30;
+            PositionX = x;
 
-            PositionY = 50;
+            PositionY = y;
 
             Life = 3;
 
             Skin = @"████████████████████¦████████████████████";
 
-            Width = 20;
+            Width = Skin.Split("¦")[0].Length;
 
-            Height = 2;
+            Height = Skin.Split("¦").Length;
+
         }
 
-        public void TakeDamage()
+        public string Color { get => Color; set => Color = value; }
+
+        public void TakeDamage(List<Wall> list)
         {
-            Life -= 1;
+            Life--;
+            if(Life == 0)
+            {
+                list.Remove(this);
+                Erase();
+            }
+        }
+
+        public void Erase()
+        {
+            Console.MoveBufferArea(0, 52, Width, Height, PositionX, PositionY);
         }
     }
 }

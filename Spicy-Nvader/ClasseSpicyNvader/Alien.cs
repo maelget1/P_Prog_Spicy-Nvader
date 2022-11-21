@@ -8,8 +8,6 @@ namespace ClasseSpicyNvader
 {
     public class Alien : Entity
     {
-        private Timer timer;
-
         private int bigX;
 
         private int bigY;
@@ -31,40 +29,14 @@ namespace ClasseSpicyNvader
 
             Skin = @"     ▀▄   ▄▀    ¦    ▄█▀███▀█▄    ¦   █▀███████▀█   ¦   █ █▀▀▀▀▀█ █   ¦      ▀▀ ▀▀      ";
 
-            Width = 16;
+            Width = Skin.Split("¦")[0].Length;
 
-            Height = 5;
+            Height = Skin.Split("¦").Length;
         }
 
         public void Attack()
         {
             Laser laser = new Laser(PositionX, PositionY);
-        }
-
-        public void Move(object state)
-        {
-            if (MinX <= 300 - (Width * 6) && BigY % 2 == 0)
-            {
-                if (MinX == 300 - (Width * 6))
-                {
-                    MoveDown();
-                }
-                else
-                {
-                    MoveRight();
-                }
-            }
-            if (BigX >= Width * 6 && BigY % 2 == 1)
-            {
-                if (MinX == 0)
-                {
-                    MoveDown();
-                }
-                else
-                {
-                    MoveLeft();
-                }
-            }
         }
 
         public void MoveRight()
@@ -82,9 +54,9 @@ namespace ClasseSpicyNvader
             Console.MoveBufferArea(PositionX, PositionY, Width, Height, PositionX, ++PositionY);
         }
 
-        public void Die()
+        public void Erase()
         {
-
+            Console.MoveBufferArea(0, 52, Width, Height, PositionX, PositionY);
         }
     }
 }
