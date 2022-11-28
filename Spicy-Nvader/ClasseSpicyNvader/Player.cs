@@ -52,7 +52,7 @@
 
         public void LoseLife()
         {
-            Life -= 1;
+            Life--;
         }
 
         public void AddScore()

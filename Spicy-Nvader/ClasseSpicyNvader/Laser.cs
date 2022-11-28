@@ -27,7 +27,14 @@ namespace ClasseSpicyNvader
 
         public void MoveAlien()
         {
-            PositionY++;
+            if (PositionY != 60)
+            {
+                Console.MoveBufferArea(PositionX, PositionY, Width, Height, PositionX, ++PositionY);
+            }
+            else
+            {
+                Erase();
+            }
         }
 
         public void MovePlayer()

@@ -34,9 +34,10 @@ namespace ClasseSpicyNvader
             Height = Skin.Split("¦").Length;
         }
 
-        public void Attack()
+        public Laser Attack()
         {
-            Laser laser = new Laser(PositionX, PositionY);
+            Laser laser = new Laser(PositionX + 9, PositionY + 5);
+            return laser;
         }
 
         public void MoveRight()

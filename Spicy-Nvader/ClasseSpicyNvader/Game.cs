@@ -19,21 +19,25 @@ namespace ClasseSpicyNvader
         int alienY;
         int cursorBreak;
         bool quitOrStart;
+        int randomAlien;
+        bool playing;
         Player player;
+        Random random = new Random();
         Menu menu = new Menu();
         Wall wall1 = new Wall(30, 50);
         Wall wall2 = new Wall(100, 50);
         Wall wall3 = new Wall(150, 50);
         List<Alien> ennemies = new List<Alien>();
-        List<Laser> lasers = new List<Laser>();
+        List<Laser> lasersPlayer = new List<Laser>();
         List<Wall> walls = new List<Wall>();
+        List<Laser> lasersAlien = new List<Laser>();
         Timer timerAlien;
-        Timer timerLaser;
-        Timer timerWall;
+        Timer timerLaserPlayer;
+        Timer timerLaserEnnemies;
 
         public void PlayGame()
         {
-            
+            menu.Playing = false;
 
             //efface la console
             Console.Clear();
@@ -72,6 +76,8 @@ namespace ClasseSpicyNvader
                 player = new Player(name, 0, 107, 56, 3);
             }
 
+            playing = true;
+
             InitiateAlien();
 
             InitiateWall();
@@ -81,8 +87,11 @@ namespace ClasseSpicyNvader
             timerAlien = new Timer(new TimerCallback(ActionEnemies));
             timerAlien.Change(0, 200);
 
-            timerLaser = new Timer(new TimerCallback(LaserMovementPlayer));
-            timerLaser.Change(0, 50);
+            timerLaserPlayer = new Timer(new TimerCallback(LaserMovementPlayer));
+            timerLaserPlayer.Change(0, 50);
+
+            timerLaserEnnemies = new Timer(new TimerCallback(LaserMovementEnnemies));
+            timerLaserEnnemies.Change(0, 50);
 
             GameMusic();
 
@@ -116,7 +125,7 @@ namespace ClasseSpicyNvader
                     case ConsoleKey.Spacebar:
 
                         //appelle la fonction pour tirer
-                        lasers.Add(player.Attack());
+                        lasersPlayer.Add(player.Attack());
 
                         //quitte l'action
                         break;
@@ -135,7 +144,7 @@ namespace ClasseSpicyNvader
 
                
 
-            } while (true);
+            } while (playing);
         }
 
         private void ActionEnemies(object state)
@@ -148,7 +157,7 @@ namespace ClasseSpicyNvader
             bigY = ennemies.Max(elements => elements.Height) + bigY;
             foreach (Alien element in ennemies.ToArray())
             {
-                
+                randomAlien = random.Next(0, 10);
                 element.Draw();
                 if (minX <= 240 - (element.Width * 6) && bigY % 2 == 1)
                 {
@@ -159,6 +168,10 @@ namespace ClasseSpicyNvader
                     else
                     {
                         element.MoveRight();
+                        if(element.PositionY + element.Height == bigY && randomAlien == 3)
+                        {
+                            lasersAlien.Add(element.Attack());
+                        }
                     }
                 }
                 else if (bigX >=element.Width * 6 && bigY % 2 == 0)
@@ -170,28 +183,36 @@ namespace ClasseSpicyNvader
                     else
                     {
                         element.MoveLeft();
+                        if (element.PositionY + element.Height == bigY && randomAlien == 3)
+                        {
+                            lasersAlien.Add(element.Attack());
+                        }
                     }
                 }
-                foreach (Laser laser in lasers.ToArray())
+                foreach (Laser laser in lasersPlayer.ToArray())
                 {
                     if (element.PositionX <= laser.PositionX && element.PositionX + element.Width >= laser.PositionX && element.PositionY <= laser.PositionY && element.PositionY + element.Height >= laser.PositionY)
                     {
                         KillAlien(laser, element);
                     }                
                 }
+                if(bigY == 50)
+                {
+                    GameOver();
+                }
             }
         }
 
         private void LaserMovementPlayer(object state)
         {
-            foreach(Laser laser in lasers.ToArray())
+            foreach(Laser laser in lasersPlayer.ToArray())
             {
                 laser.MovePlayer();
                 foreach(Wall wall in walls.ToArray())
                 {
                     if (wall.PositionX <= laser.PositionX && wall.PositionX + wall.Width >= laser.PositionX && wall.PositionY <= laser.PositionY && wall.PositionY + wall.Height >= laser.PositionY)
                     {
-                        lasers.Remove(laser);
+                        lasersPlayer.Remove(laser);
                         laser.Erase();
                         wall.TakeDamage(walls);
                         if(wall.Life == 2)
@@ -210,11 +231,70 @@ namespace ClasseSpicyNvader
                 }
             }
         }
+
+        private void LaserMovementEnnemies(object state)
+        {
+            foreach (Laser laser in lasersAlien.ToArray())
+            {
+                laser.MoveAlien();
+                foreach (Wall wall in walls.ToArray())
+                {
+                    if (wall.PositionX <= laser.PositionX && wall.PositionX + wall.Width >= laser.PositionX && wall.PositionY <= laser.PositionY && wall.PositionY + wall.Height >= laser.PositionY)
+                    {
+                        lasersAlien.Remove(laser);
+                        laser.Erase();
+                        wall.TakeDamage(walls);
+                        if (wall.Life == 2)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            wall.Draw();
+                            Console.ResetColor();
+                        }
+                        if (wall.Life == 1)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            wall.Draw();
+                            Console.ResetColor();
+                        }
+                    }   
+                }
+                if (laser.PositionX >= player.PositionX && laser.PositionX <= player.PositionX + player.Width && laser.PositionY >= player.PositionY && laser.PositionY <= player.PositionY + player.Height)
+                {
+                    lasersAlien.Remove(laser);
+                    laser.Erase();
+                    player.LoseLife();
+                    Stats(player);
+                    if(player.Life == 0)
+                    {
+                        GameOver();
+                    }
+                }  
+            }
+        }
+
         public void GameOver()
         {
             Console.Clear();
 
+            playing = false;
+
+            timerAlien.Dispose();
+
+            timerLaserEnnemies.Dispose();
+
+            timerLaserPlayer.Dispose();
+
+            ennemies.Clear();
+
+            lasersAlien.Clear();
+
+            lasersPlayer.Clear();
+
+            walls.Clear();
+
             menu.AddBestScore(player.Score);
+
+            menu.Playing = true;
 
             Console.SetCursorPosition(Console.LargestWindowWidth / 2,0);
 
@@ -354,7 +434,7 @@ namespace ClasseSpicyNvader
         private void KillAlien(Laser laser, Alien alien)
         {
             ennemies.Remove(alien);
-            lasers.Remove(laser);
+            lasersPlayer.Remove(laser);
             laser.Erase();
             alien.Erase();
             player.AddScore();

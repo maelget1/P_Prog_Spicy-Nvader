@@ -14,13 +14,18 @@ namespace ClasseSpicyNvader
         private List<int> bestScore = new List<int>();
 
         public List<int> BestScore { get => bestScore; set => bestScore = value; }
+
         public bool Difficulty { get => difficulty; set => difficulty = value; }
+        public bool Playing { get => playing; set => playing = value; }
 
         private bool difficulty;
+
+        private bool playing = true;
 
         public void ShowMenu()
         {
             int cursorY = 7;
+
             do
             {
                 //dimensionne la console
@@ -197,7 +202,7 @@ namespace ClasseSpicyNvader
                         break;
                 }
 
-            } while (true);
+            } while (Playing);
         }
 
         public void ShowAbout()
