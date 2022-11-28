@@ -58,7 +58,7 @@ namespace ClasseSpicyNvader
             if (name == "ExcaliBreizh")
             {
                 //instancie un nouveau joueur avec le nom qu'il a entré
-                player = new Player(name, 0, 107, 56, 5);
+                player = new Player(name, 107, 56, 5);
             }
 
             //si le pseudo est autres
@@ -67,13 +67,13 @@ namespace ClasseSpicyNvader
                 EasterEgg();
 
                 //instancie un nouveau joueur avec le nom qu'il a entré
-                player = new Player(name, 0, 107, 56, 3);
+                player = new Player(name, 107, 56, 3);
             }
 
             else
             {
                 //instancie un nouveau joueur avec le nom qu'il a entré
-                player = new Player(name, 0, 107, 56, 3);
+                player = new Player(name, 107, 56, 3);
             }
 
             playing = true;
@@ -101,7 +101,7 @@ namespace ClasseSpicyNvader
             do
             { 
                 //lis les touches cliquées
-                switch (Console.ReadKey().Key)
+                switch (Console.ReadKey(true).Key)
                 {
                     //si flèche de droite
                     case ConsoleKey.RightArrow:
@@ -309,12 +309,12 @@ namespace ClasseSpicyNvader
 ");
             Console.Write("Appuyez sur n'importe quelle touche pour quitter");
 
-            switch (Console.ReadKey().Key)
+            switch (Console.ReadKey(true).Key)
             {
                 default:
-                    menu.ShowMenu();
                     break;
             }
+            menu.ShowMenu();
         }
 
         public void Break()
@@ -351,7 +351,7 @@ namespace ClasseSpicyNvader
                 Console.Write("<--");
 
                 //lis les touches cliquées
-                switch (Console.ReadKey().Key)
+                switch (Console.ReadKey(true).Key)
                 {
                     case ConsoleKey.DownArrow:
                         if (cursorBreak == 20)

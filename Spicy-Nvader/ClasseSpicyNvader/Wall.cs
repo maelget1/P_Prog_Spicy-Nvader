@@ -24,8 +24,6 @@ namespace ClasseSpicyNvader
 
         }
 
-        public string Color { get => Color; set => Color = value; }
-
         public void TakeDamage(List<Wall> list)
         {
             Life--;

@@ -130,7 +130,7 @@ namespace ClasseSpicyNvader
 
 
                 //lis les touches cliquées
-                switch (Console.ReadKey().Key)
+                switch (Console.ReadKey(true).Key)
                 {
                     //flèche du bas
                     case ConsoleKey.DownArrow:

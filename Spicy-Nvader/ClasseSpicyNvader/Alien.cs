@@ -8,19 +8,6 @@ namespace ClasseSpicyNvader
 {
     public class Alien : Entity
     {
-        private int bigX;
-
-        private int bigY;
-
-        private int minY;
-
-        private int minX;
-
-        public int BigY { get => bigY; set => bigY = value; }
-        public int BigX { get => bigX; set => bigX = value; }
-        public int MinX { get => minX; set => minX = value; }
-        public int MinY { get => minY; set => minY = value; }
-
         public Alien(int positionX, int positionY)
         {
             PositionX = positionX;

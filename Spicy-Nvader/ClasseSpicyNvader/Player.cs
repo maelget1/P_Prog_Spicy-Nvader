@@ -7,13 +7,13 @@
 
         private int score;
 
-        public Player(string name, int score, int positionX, int positionY, byte life)
+        public Player(string name, int positionX, int positionY, byte life)
         {
             Skin = @"        ▄        ¦       ███       ¦  ▄███████████▄  ¦  █████████████  ¦  █████████████  ";
 
             this.name = name;
 
-            Score = score;
+            Score = 0;
 
             PositionX = positionX;
 

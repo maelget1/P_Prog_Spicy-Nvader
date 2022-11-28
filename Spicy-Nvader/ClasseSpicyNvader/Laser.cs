@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 namespace ClasseSpicyNvader
 {
     public class Laser : Entity
-    {
-        private Timer timer;
-        
+    {   
         public Laser(int positionX, int positionY)
         {
             Width = 1;
