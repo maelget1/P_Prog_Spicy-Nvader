@@ -34,7 +34,7 @@ namespace ClasseSpicyNvader
         Timer timerLaserPlayer;
         Timer timerLaserEnnemies;
 
-        public void PlayGame()
+        public void InitiateGame()
         {
             menu.Playing = false;
 
@@ -61,7 +61,7 @@ namespace ClasseSpicyNvader
             }
 
             //si le pseudo est autres
-            else if(name == "Saul")
+            else if (name == "Saul")
             {
                 EasterEgg();
 
@@ -79,9 +79,30 @@ namespace ClasseSpicyNvader
 
             InitiateAlien();
 
+            GameMusic();
+
+            
+        }
+
+        public void PlayGame()
+        {
+            Console.Clear();
+
             InitiateWall();
 
             Stats(player);
+
+            foreach (Laser laser in lasersAlien)
+            {
+                laser.Draw();
+            }
+
+            foreach(Laser laser in lasersPlayer)
+            {
+                laser.Draw();
+            }
+
+            player.Draw();
 
             timerAlien = new Timer(new TimerCallback(ActionEnemies));
             timerAlien.Change(0, 200);
@@ -92,13 +113,9 @@ namespace ClasseSpicyNvader
             timerLaserEnnemies = new Timer(new TimerCallback(LaserMovementEnnemies));
             timerLaserEnnemies.Change(0, 100);
 
-            GameMusic();
-
-            player.Draw();
-
             //le fait tant que c'est pas fini
             do
-            { 
+            {
                 //lis les touches cliquées
                 switch (Console.ReadKey(true).Key)
                 {
@@ -146,6 +163,12 @@ namespace ClasseSpicyNvader
             } while (playing);
         }
 
+        public void StartGame()
+        {
+            InitiateGame();
+            PlayGame();
+        }
+
         private void ActionEnemies(object state)
         {
             if(ennemies.Count != 0)
@@ -173,7 +196,7 @@ namespace ClasseSpicyNvader
                             element.MoveRight();
                             if (element.PositionY + element.Height == bigY && randomAlien == 3)
                             {
-                                //lasersAlien.Add(element.Attack());
+                                lasersAlien.Add(element.Attack());
                             }
                         }
                     }
@@ -189,7 +212,7 @@ namespace ClasseSpicyNvader
                             element.MoveLeft();
                             if (element.PositionY + element.Height == bigY && randomAlien == 3)
                             {
-                                //lasersAlien.Add(element.Attack());
+                                lasersAlien.Add(element.Attack());
                             }
                         }
                     }
@@ -271,25 +294,25 @@ namespace ClasseSpicyNvader
                             Console.ResetColor();
                         }
                     }
-                    else if (laser.PositionX >= player.PositionX && laser.PositionX <= player.PositionX + player.Width && laser.PositionY >= player.PositionY && laser.PositionY <= player.PositionY + player.Height)
-                    {
-                        lasersAlien.Remove(laser);
-                        laser.Erase();
-                        player.LoseLife();
-                        Stats(player);
-                        if (player.Life == 0)
-                        {
-                            GameOver();
-                        }
-                    }
                     else if (laser.PositionY > 62)
                     {
                         lasersAlien.Remove(laser);
                     }
                 }
-                
+                if (laser.PositionX >= player.PositionX && laser.PositionX <= player.PositionX + player.Width && laser.PositionY >= player.PositionY && laser.PositionY <= player.PositionY + player.Height)
+                {
+                    lasersAlien.Remove(laser);
+                    laser.Erase();
+                    player.LoseLife();
+                    Stats(player);
+                    if (player.Life == 0)
+                    {
+                        GameOver();
+                    }
+                }
 
-                
+
+
             }
         }
 
@@ -346,6 +369,14 @@ namespace ClasseSpicyNvader
 
             do
             {
+                timerAlien.Dispose();
+
+                timerLaserEnnemies.Dispose();
+
+                timerLaserPlayer.Dispose();
+
+                walls.Clear();
+
                 Console.Clear();
 
                 Console.SetCursorPosition(Console.LargestWindowWidth / 2, 0);
@@ -407,7 +438,7 @@ namespace ClasseSpicyNvader
 
         public void Resume()
         {
-            
+            PlayGame();
         }
 
 
@@ -465,6 +496,10 @@ namespace ClasseSpicyNvader
 
         private void Stats(Player player)
         {
+            for(int i = 5; i <= 7; i++)
+            {
+                Console.MoveBufferArea(30, 0, 1, 1, i, 0);
+            }
             Console.SetCursorPosition(0, 0);
             Console.Write("Vie: ");
             for (int nbrLife = 0; nbrLife < player.Life; nbrLife++)
@@ -479,12 +514,28 @@ namespace ClasseSpicyNvader
 
         public void InitiateWall()
         {
-            wall1.Draw();
-            wall2.Draw();
-            wall3.Draw();
             walls.Add(wall1);
             walls.Add(wall2);
             walls.Add(wall3);
+            foreach(Wall wall in walls)
+            {
+                if(wall.Life == 2)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    wall.Draw();
+                    Console.ResetColor();
+                }
+                else if(wall.Life == 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    wall.Draw();
+                    Console.ResetColor();
+                }
+                else if(wall.Life == 3)
+                {
+                    wall.Draw();
+                }
+            }
         }
     }
 }

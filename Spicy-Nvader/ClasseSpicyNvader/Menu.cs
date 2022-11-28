@@ -153,7 +153,7 @@ namespace ClasseSpicyNvader
                         if (cursorY == 7)
                         {
                             Game game = new Game();
-                            game.PlayGame();
+                            game.StartGame();
                         }
 
                         //si sur l'option "options"
