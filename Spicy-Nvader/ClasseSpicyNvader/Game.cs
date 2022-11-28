@@ -80,8 +80,6 @@ namespace ClasseSpicyNvader
             InitiateAlien();
 
             GameMusic();
-
-            
         }
 
         public void PlayGame()
