@@ -25,7 +25,7 @@ namespace ClasseSpicyNvader
 
         public void MoveAlien()
         {
-            if (PositionY != 60)
+            if (PositionY < 62)
             {
                 Console.MoveBufferArea(PositionX, PositionY, Width, Height, PositionX, ++PositionY);
             }

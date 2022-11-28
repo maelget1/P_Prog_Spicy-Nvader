@@ -9,7 +9,7 @@
 
         public Player(string name, int positionX, int positionY, byte life)
         {
-            Skin = @"        ▄        ¦       ███       ¦  ▄███████████▄  ¦  █████████████  ¦  █████████████  ";
+            Skin = @"      ▄      ¦     ███     ¦▄███████████▄¦█████████████¦█████████████";
 
             this.name = name;
 
@@ -30,7 +30,7 @@
 
         public Laser Attack()
         {
-            Laser laser = new Laser(PositionX + 8, PositionY - 1);
+            Laser laser = new Laser(PositionX + 6, PositionY - 1);
             return laser;
         }
 

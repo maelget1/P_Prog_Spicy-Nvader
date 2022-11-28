@@ -13,9 +13,14 @@ namespace ClasseSpicyNvader
     {
         private List<int> bestScore = new List<int>();
 
+        private static string arrow = "   ___              ¦  /  /              ¦ /  / ______ ______ ¦<  < |______|______|¦ \\  \\              ¦  \\__\\             ";
+
+        private string[] subs = arrow.Split("¦");
+
         public List<int> BestScore { get => bestScore; set => bestScore = value; }
 
         public bool Difficulty { get => difficulty; set => difficulty = value; }
+
         public bool Playing { get => playing; set => playing = value; }
 
         private bool difficulty;
@@ -25,6 +30,8 @@ namespace ClasseSpicyNvader
         public void ShowMenu()
         {
             int cursorY = 7;
+
+            
 
             do
             {
@@ -101,33 +108,14 @@ namespace ClasseSpicyNvader
  \_____\_____\\______/  |__|     |__|        |__|     |_______|| _| `._____|
                                                                             
 ");
+                int compteur = 1;
 
-                //place le curseur à côté du 1 er onglet
-                Console.SetCursorPosition(160, cursorY + 1);
-
-                //écrit le curseur
-                Console.WriteLine("   ___              ");
-
-                Console.SetCursorPosition(160, cursorY + 2);
-
-                Console.WriteLine("  /  /              ");
-
-                Console.SetCursorPosition(160, cursorY + 3);
-
-                Console.WriteLine(" /  / ______ ______ ");
-
-                Console.SetCursorPosition(160, cursorY + 4);
-
-                Console.WriteLine("<  < |______|______|");
-
-                Console.SetCursorPosition(160, cursorY + 5);
-
-                Console.WriteLine(" \\  \\              ");
-
-                Console.SetCursorPosition(160, cursorY + 6);
-
-                Console.WriteLine("  \\__\\             ");
-
+                foreach (string sub in subs)
+                {
+                    Console.SetCursorPosition(160, cursorY + compteur);
+                    Console.Write(sub);
+                    compteur++;
+                }
 
                 //lis les touches cliquées
                 switch (Console.ReadKey(true).Key)

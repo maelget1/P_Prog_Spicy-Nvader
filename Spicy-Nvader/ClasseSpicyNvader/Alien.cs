@@ -8,11 +8,11 @@ namespace ClasseSpicyNvader
 {
     public class Alien : Entity
     {
-        public Alien(int positionX, int positionY)
+        public Alien()
         {
-            PositionX = positionX;
+            PositionX = 0;
 
-            PositionY = positionY;
+            PositionY = 0;
 
             Skin = @"     ▀▄   ▄▀    ¦    ▄█▀███▀█▄    ¦   █▀███████▀█   ¦   █ █▀▀▀▀▀█ █   ¦      ▀▀ ▀▀      ";
 

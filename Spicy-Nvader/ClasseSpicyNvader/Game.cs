@@ -13,10 +13,9 @@ namespace ClasseSpicyNvader
     {
         //////////////////////////////////////////////////variables//////////////////////////////////////////////////
         string name;
+        int line;
         int numberEnnemiesX;
         int numberEnnemiesY;
-        int alienX;
-        int alienY;
         int cursorBreak;
         bool quitOrStart;
         int randomAlien;
@@ -91,7 +90,7 @@ namespace ClasseSpicyNvader
             timerLaserPlayer.Change(0, 50);
 
             timerLaserEnnemies = new Timer(new TimerCallback(LaserMovementEnnemies));
-            timerLaserEnnemies.Change(0, 50);
+            timerLaserEnnemies.Change(0, 100);
 
             GameMusic();
 
@@ -149,57 +148,72 @@ namespace ClasseSpicyNvader
 
         private void ActionEnemies(object state)
         {
-            int minX = ennemies.Min(elements => elements.PositionX);
-            int bigX = ennemies.Max(elements => elements.PositionX);
-            bigX = ennemies.Max(elements => elements.Width) + bigX;
-            int minY = ennemies.Max(elements => elements.PositionY);
-            int bigY = ennemies.Max(elements => elements.PositionY);
-            bigY = ennemies.Max(elements => elements.Height) + bigY;
-            foreach (Alien element in ennemies.ToArray())
+            if(ennemies.Count != 0)
             {
-                randomAlien = random.Next(0, 10);
-                element.Draw();
-                if (minX <= 240 - (element.Width * 6) && bigY % 2 == 1)
+                bool down = false;
+                int minX = ennemies.Min(elements => elements.PositionX);
+                int bigX = ennemies.Max(elements => elements.PositionX);
+                bigX = bigX + ennemies.Max(elements => elements.Width);
+                int minY = ennemies.Max(elements => elements.PositionY);
+                int bigY = ennemies.Max(elements => elements.Height);
+                bigY = bigY + ennemies.Max(elements => elements.PositionY);
+                foreach (Alien element in ennemies.ToArray())
                 {
-                    if (minX == 240 - (element.Width * 6))
+                    randomAlien = random.Next(0, 20);
+                    element.Draw();
+                    if (minX <= 240 - (element.Width * ((bigX-minX) / element.Width)) && line % 2 == 1)
                     {
-                        element.MoveDown();
-                    }
-                    else
-                    {
-                        element.MoveRight();
-                        if(element.PositionY + element.Height == bigY && randomAlien == 3)
+                        if (minX == 240 - (element.Width * ((bigX - minX) / element.Width)))
                         {
-                            lasersAlien.Add(element.Attack());
+                            element.MoveDown();
+                            down = true;
+                        }
+                        else
+                        {
+                            element.MoveRight();
+                            if (element.PositionY + element.Height == bigY && randomAlien == 3)
+                            {
+                                //lasersAlien.Add(element.Attack());
+                            }
                         }
                     }
-                }
-                else if (bigX >=element.Width * 6 && bigY % 2 == 0)
-                {
-                    if (minX == 0)
+                    else if (bigX >= element.Width * ((bigX - minX) / element.Width) && line % 2 == 0)
                     {
-                        element.MoveDown();
-                    }
-                    else
-                    {
-                        element.MoveLeft();
-                        if (element.PositionY + element.Height == bigY && randomAlien == 3)
+                        if (minX == 0)
                         {
-                            lasersAlien.Add(element.Attack());
+                            element.MoveDown();
+                            down = true;
+                        }
+                        else
+                        {
+                            element.MoveLeft();
+                            if (element.PositionY + element.Height == bigY && randomAlien == 3)
+                            {
+                                //lasersAlien.Add(element.Attack());
+                            }
                         }
                     }
-                }
-                foreach (Laser laser in lasersPlayer.ToArray())
-                {
-                    if (element.PositionX <= laser.PositionX && element.PositionX + element.Width >= laser.PositionX && element.PositionY <= laser.PositionY && element.PositionY + element.Height >= laser.PositionY)
+                    foreach (Laser laser in lasersPlayer.ToArray())
                     {
-                        KillAlien(laser, element);
-                    }                
+                        if (element.PositionX <= laser.PositionX && element.PositionX + element.Width >= laser.PositionX && element.PositionY <= laser.PositionY && element.PositionY + element.Height >= laser.PositionY)
+                        {
+                            KillAlien(laser, element);
+                        }
+                    }
+                    if (line == 50)
+                    {
+                        GameOver();
+                    }
                 }
-                if(bigY == 50)
+                if (down)
                 {
-                    GameOver();
+                    line++;
                 }
+
+            }
+            else
+            {
+                GameOver();
             }
         }
 
@@ -256,19 +270,26 @@ namespace ClasseSpicyNvader
                             wall.Draw();
                             Console.ResetColor();
                         }
-                    }   
-                }
-                if (laser.PositionX >= player.PositionX && laser.PositionX <= player.PositionX + player.Width && laser.PositionY >= player.PositionY && laser.PositionY <= player.PositionY + player.Height)
-                {
-                    lasersAlien.Remove(laser);
-                    laser.Erase();
-                    player.LoseLife();
-                    Stats(player);
-                    if(player.Life == 0)
-                    {
-                        GameOver();
                     }
-                }  
+                    else if (laser.PositionX >= player.PositionX && laser.PositionX <= player.PositionX + player.Width && laser.PositionY >= player.PositionY && laser.PositionY <= player.PositionY + player.Height)
+                    {
+                        lasersAlien.Remove(laser);
+                        laser.Erase();
+                        player.LoseLife();
+                        Stats(player);
+                        if (player.Life == 0)
+                        {
+                            GameOver();
+                        }
+                    }
+                    else if (laser.PositionY > 62)
+                    {
+                        lasersAlien.Remove(laser);
+                    }
+                }
+                
+
+                
             }
         }
 
@@ -380,7 +401,7 @@ namespace ClasseSpicyNvader
                     default:
                         break;
                 }
-            } while (quitOrStart == false);
+            } while (!quitOrStart);
             
         }
 
@@ -392,7 +413,7 @@ namespace ClasseSpicyNvader
 
         public void InitiateAlien()
         {
-            if (menu.Difficulty == false)
+            if (!menu.Difficulty)
             {
                 numberEnnemiesX = 6;
                 numberEnnemiesY = 4;
@@ -406,9 +427,8 @@ namespace ClasseSpicyNvader
             for (int X = 0; X < numberEnnemiesX; X++)
             {
                 for (int Y = 0; Y < numberEnnemiesY; Y++)
-                {
-
-                    Alien alien = new Alien(alienX, alienY);
+                { 
+                    Alien alien = new Alien();
 
                     alien.PositionX = X * alien.Width + 5;
 
@@ -417,6 +437,8 @@ namespace ClasseSpicyNvader
                     ennemies.Add(alien);
                 }
             }
+
+            line = ennemies.Max(elements => elements.Height) + ennemies.Max(elements => elements.PositionY);
         }
 
         public void GameMusic()
