@@ -22,6 +22,7 @@ namespace ClasseSpicyNvader
         bool playing;
         Player player;
         Random random = new Random();
+        Menu menu = new Menu();
         Wall wall1 = new Wall(30, 50);
         Wall wall2 = new Wall(100, 50);
         Wall wall3 = new Wall(150, 50);
@@ -315,6 +316,7 @@ namespace ClasseSpicyNvader
                     laser.Erase();
                     player.LoseLife();
                     Stats(player);
+                    player.Draw();
                     if (player.Life == 0)
                     {
                         GameOver();
@@ -329,8 +331,6 @@ namespace ClasseSpicyNvader
         public void GameOver()
         {
             Console.Clear();
-
-            Menu menu = new Menu();
 
             wMPPlayer.close();
 
@@ -362,13 +362,12 @@ namespace ClasseSpicyNvader
                                                                                              
 ");
             Console.WriteLine("Bravo " + player.Name + " vous vous êtes bien battu. Votre score est de " + player.Score + " points");
-            Thread.Sleep(3000);
+            Thread.Sleep(1000);
             Console.Write("Appuyez sur n'importe quelle touche pour quitter");
 
             switch (Console.ReadKey(true).Key)
             {
                 default:
-                    menu.ShowMenu();
                     break;
             }
         }
@@ -388,6 +387,8 @@ namespace ClasseSpicyNvader
                 timerLaserPlayer.Dispose();
 
                 walls.Clear();
+
+                AddBestScore(player.Score, player.Name);
 
                 Console.Clear();
 
@@ -478,8 +479,6 @@ namespace ClasseSpicyNvader
                     alien.PositionY = Y * alien.Height + 1;
 
                     ennemies.Add(alien);
-
-                    alien.Draw();
                 }
             }
 
@@ -602,6 +601,37 @@ namespace ClasseSpicyNvader
                     wall.Draw();
                 }
             }
+        }
+
+        /// <summary>
+        /// ajoute le score au fichier texte
+        /// </summary>
+        /// <param name="score">score du joueur</param>
+        /// <param name="name">nom du joueur</param>
+        public async void AddBestScore(int score, string name)
+        {
+            //si le fichier texte existe
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "result.txt"))
+            {
+                //créer le nouveau score
+                string text = name + " :" + score + "\n";
+
+                //écrit le score dans le fichier texte
+                await File.WriteAllTextAsync("result.txt", text);
+            }
+            // si il existe pas
+            else
+            {
+                //créer le nouveau score
+                string text = name + " :" + score + "\n";
+
+                //créer le fichier texte
+                using StreamWriter file = new("result.txt", append: true);
+
+                //écrit le score dans le fichier texte
+                await file.WriteLineAsync(text);
+            }
+
         }
     }
 }

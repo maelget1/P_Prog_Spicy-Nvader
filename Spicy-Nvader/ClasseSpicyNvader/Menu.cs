@@ -26,17 +26,19 @@ namespace ClasseSpicyNvader
         //permet de savoir si il faut continuer à afficher le menu
         private bool _playing;
 
+        public bool Playing { get => _playing; set => _playing = value; }
+
         /// <summary>
         /// Affiche le menu de sélection
         /// </summary>
         public void ShowMenu()
         {
+            Console.CursorVisible = false;
+
             //crée une variable pour connaître la position du curseur
             int cursorY = 7;
 
-            //dit qu'il faut afficher le menu
             _playing = true;
-
 
             //dimensionne la console
             Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
@@ -44,11 +46,11 @@ namespace ClasseSpicyNvader
             //dimensionne la console
             Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
 
+
             do
             {
                 //efface la console
                 Console.Clear();
-
 
                 //titre
                 Console.WriteLine(@"
@@ -121,7 +123,6 @@ namespace ClasseSpicyNvader
                     Console.Write(sub);
                     compteur++;
                 }
-
                 //lis les touches cliquées
                 switch (Console.ReadKey(true).Key)
                 {
@@ -132,7 +133,13 @@ namespace ClasseSpicyNvader
                         if (cursorY < 43)
                         {
                             //va sur l'autre choix plus bas
+                            Console.MoveBufferArea(160, cursorY, 20, 8, 160, cursorY + 9);
+
                             cursorY += 9;
+                        }
+                        else
+                        {
+                            Console.MoveBufferArea(160, cursorY, 20, 6, 160, cursorY);
                         }
 
                         //quitte l'action
@@ -144,8 +151,15 @@ namespace ClasseSpicyNvader
                         //si le curseur n'est pas sur le premier choix
                         if (cursorY > 7)
                         {
+                            //va sur l'autre choix plus bas
+                            Console.MoveBufferArea(160, cursorY, 20, 8, 160, cursorY - 9);
+
                             //va sur le choix au dessus
                             cursorY -= 9;
+                        }
+                        else
+                        {
+                            Console.MoveBufferArea(160, cursorY, 20, 6, 160, cursorY);
                         }
 
                         //quitte l'action
@@ -159,7 +173,6 @@ namespace ClasseSpicyNvader
                         {
                             Game game = new Game();
                             game.StartGame(_playSong, _difficulty);
-                            _playing = false;
                         }
 
                         //si sur l'option "options"
@@ -266,37 +279,6 @@ namespace ClasseSpicyNvader
                 case ConsoleKey.Escape:
                     break;
             }
-        }
-
-        /// <summary>
-        /// ajoute le score au fichier texte
-        /// </summary>
-        /// <param name="score">score du joueur</param>
-        /// <param name="name">nom du joueur</param>
-        public async void AddBestScore(int score, string name)
-        {
-            //si le fichier texte existe
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "result.txt"))
-            {
-                //créer le nouveau score
-                string text = name + " :" + score + "\n";
-
-                //écrit le score dans le fichier texte
-                await File.WriteAllTextAsync("result.txt", text);
-            }
-            // si il existe pas
-            else
-            {
-                //créer le nouveau score
-                string text = name + " :" + score + "\n";
-
-                //créer le fichier texte
-                using StreamWriter file = new("result.txt", append: true);
-
-                //écrit le score dans le fichier texte
-                await file.WriteLineAsync(text);
-            }
-
         }
 
         /// <summary>
@@ -416,8 +398,14 @@ namespace ClasseSpicyNvader
                         //si le curseur n'est pas sur le dernier choix
                         if (cursorY < 25)
                         {
+                            Console.MoveBufferArea(160, cursorY, 20, 6, 160, cursorY + 18);
+
                             //va sur l'autre choix plus bas
                             cursorY += 18;
+                        }
+                        else
+                        {
+                            Console.MoveBufferArea(160, cursorY, 20, 6, 160, cursorY);
                         }
 
                         //quitte l'action
@@ -429,8 +417,14 @@ namespace ClasseSpicyNvader
                         //si le curseur n'est pas sur le premier choix
                         if (cursorY > 7)
                         {
+                            Console.MoveBufferArea(160, cursorY, 20, 6, 160, cursorY - 18);
+
                             //va sur le choix au dessus
                             cursorY -= 18;
+                        }
+                        else
+                        {
+                            Console.MoveBufferArea(160, cursorY, 20, 6, 160, cursorY);
                         }
 
                         //quitte l'action
