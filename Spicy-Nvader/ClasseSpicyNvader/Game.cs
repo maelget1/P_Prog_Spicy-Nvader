@@ -350,6 +350,8 @@ namespace ClasseSpicyNvader
 
             walls.Clear();
 
+            AddBestScore(player.Score, player.Name);
+
             Console.SetCursorPosition(Console.LargestWindowWidth / 2,0);
 
             Console.Write(@"                                                                 
@@ -387,8 +389,6 @@ namespace ClasseSpicyNvader
                 timerLaserPlayer.Dispose();
 
                 walls.Clear();
-
-                AddBestScore(player.Score, player.Name);
 
                 Console.Clear();
 
