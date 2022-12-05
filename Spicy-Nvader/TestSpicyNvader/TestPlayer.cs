@@ -8,9 +8,9 @@ namespace TestSpicyNvader
         [TestMethod]
         public void goRightTest()
         {
-            Player player = new Player("Kevin", 0, 0, 0, 3);
+            Player player = new Player("Kevin", 0, 0, 0);
 
-            player.goRight();
+            player.GoRight();
 
             Assert.AreEqual(1, player.PositionX);
         }
@@ -18,9 +18,9 @@ namespace TestSpicyNvader
         [TestMethod]
         public void goLeftTest()
         {
-            Player player = new Player("Kevin", 0, 4, 0, 3);
+            Player player = new Player("Kevin", 4, 0, 0);
 
-            player.goLeft();
+            player.GoLeft();
 
             Assert.AreEqual(3, player.PositionX);
         }
@@ -28,34 +28,25 @@ namespace TestSpicyNvader
         [TestMethod]
         public void goLeftTest2()
         {
-            Player player = new Player("Quentin", 0, 0, 0, 3);
+            Player player = new Player("Quentin", 0, 0, 0);
 
-            bool validation = true;
-            try
-            {
-                player.goLeft();
-                validation = false;
-            }
-            catch
-            {
+            player.GoLeft();
 
-            }
-
-            Assert.IsTrue(validation);
+            Assert.AreEqual(0, player.PositionX);
         }
 
         [TestMethod]
         public void constructTest()
         {
-            Player player = new Player("Quentin", 0, 0, 0, 3);
+            Player player = new Player("Quentin", 0, 0, 0);
 
             Assert.AreEqual(0, player.PositionX);
 
             Assert.AreEqual(0, player.PositionY);
 
-            Assert.AreEqual("Quentin", player.name);
+            Assert.AreEqual("Quentin", player.Name);
 
-            Assert.AreEqual(3, player.Life);
+            Assert.AreEqual(0, player.Life);
 
             Assert.AreEqual(0, player.Score);
         }

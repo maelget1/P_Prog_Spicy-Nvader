@@ -39,5 +39,10 @@ namespace ClasseSpicyNvader
             }
             return skin;
         }
+
+        public void Erase()
+        {
+            Console.MoveBufferArea(0, 52, Width, Height, PositionX, PositionY);
+        }
     }
 }

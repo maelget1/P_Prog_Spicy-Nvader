@@ -22,7 +22,6 @@ namespace ClasseSpicyNvader
         bool playing;
         Player player;
         Random random = new Random();
-        Menu menu = new Menu();
         Wall wall1 = new Wall(30, 50);
         Wall wall2 = new Wall(100, 50);
         Wall wall3 = new Wall(150, 50);
@@ -33,11 +32,10 @@ namespace ClasseSpicyNvader
         Timer timerAlien;
         Timer timerLaserPlayer;
         Timer timerLaserEnnemies;
+        WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();
 
-        public void InitiateGame()
+        public void InitiateGame(bool sound, bool difficulty)
         {
-            menu.Playing = false;
-
             //efface la console
             Console.Clear();
 
@@ -77,9 +75,12 @@ namespace ClasseSpicyNvader
 
             playing = true;
 
-            InitiateAlien();
+            InitiateAlien(difficulty);
 
-            GameMusic();
+            if (sound)
+            {
+                wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/star wars cantina.mp3";
+            }
         }
 
         public void PlayGame()
@@ -138,8 +139,11 @@ namespace ClasseSpicyNvader
                     //si espace
                     case ConsoleKey.Spacebar:
 
-                        //appelle la fonction pour tirer
-                        lasersPlayer.Add(player.Attack());
+                        if(lasersPlayer.Count != 1)
+                        {
+                            //appelle la fonction pour tirer
+                            lasersPlayer.Add(player.Attack());
+                        }
 
                         //quitte l'action
                         break;
@@ -161,9 +165,9 @@ namespace ClasseSpicyNvader
             } while (playing);
         }
 
-        public void StartGame()
+        public void StartGame(bool sound, bool difficulty)
         {
-            InitiateGame();
+            InitiateGame(sound, difficulty);
             PlayGame();
         }
 
@@ -180,8 +184,8 @@ namespace ClasseSpicyNvader
                 bigY = bigY + ennemies.Max(elements => elements.PositionY);
                 foreach (Alien element in ennemies.ToArray())
                 {
-                    randomAlien = random.Next(0, 20);
                     element.Draw();
+                    randomAlien = random.Next(0, 20);
                     if (minX <= 240 - (element.Width * ((bigX-minX) / element.Width)) && line % 2 == 1)
                     {
                         if (minX == 240 - (element.Width * ((bigX - minX) / element.Width)))
@@ -242,25 +246,33 @@ namespace ClasseSpicyNvader
         {
             foreach(Laser laser in lasersPlayer.ToArray())
             {
-                laser.MovePlayer();
-                foreach(Wall wall in walls.ToArray())
+                if(laser.PositionY == 1)
                 {
-                    if (wall.PositionX <= laser.PositionX && wall.PositionX + wall.Width >= laser.PositionX && wall.PositionY <= laser.PositionY && wall.PositionY + wall.Height >= laser.PositionY)
+                    lasersPlayer.Remove(laser);
+                    laser.Erase();
+                }
+                else
+                {
+                    laser.MovePlayer();
+                    foreach (Wall wall in walls.ToArray())
                     {
-                        lasersPlayer.Remove(laser);
-                        laser.Erase();
-                        wall.TakeDamage(walls);
-                        if(wall.Life == 2)
+                        if (wall.PositionX <= laser.PositionX && wall.PositionX + wall.Width >= laser.PositionX && wall.PositionY <= laser.PositionY && wall.PositionY + wall.Height >= laser.PositionY)
                         {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            wall.Draw();
-                            Console.ResetColor();
-                        }
-                        if(wall.Life == 1)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            wall.Draw();
-                            Console.ResetColor();
+                            lasersPlayer.Remove(laser);
+                            laser.Erase();
+                            wall.TakeDamage(walls);
+                            if (wall.Life == 2)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                wall.Draw();
+                                Console.ResetColor();
+                            }
+                            if (wall.Life == 1)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                wall.Draw();
+                                Console.ResetColor();
+                            }
                         }
                     }
                 }
@@ -318,6 +330,10 @@ namespace ClasseSpicyNvader
         {
             Console.Clear();
 
+            Menu menu = new Menu();
+
+            wMPPlayer.close();
+
             playing = false;
 
             timerAlien.Dispose();
@@ -334,10 +350,6 @@ namespace ClasseSpicyNvader
 
             walls.Clear();
 
-            menu.AddBestScore(player.Score);
-
-            menu.Playing = true;
-
             Console.SetCursorPosition(Console.LargestWindowWidth / 2,0);
 
             Console.Write(@"                                                                 
@@ -349,14 +361,16 @@ namespace ClasseSpicyNvader
  \______| /__/     \__\ |__|  |__| |_______|    \______/      \__/     |_______|| _| `._____|
                                                                                              
 ");
+            Console.WriteLine("Bravo " + player.Name + " vous vous êtes bien battu. Votre score est de " + player.Score + " points");
+            Thread.Sleep(3000);
             Console.Write("Appuyez sur n'importe quelle touche pour quitter");
 
             switch (Console.ReadKey(true).Key)
             {
                 default:
+                    menu.ShowMenu();
                     break;
             }
-            menu.ShowMenu();
         }
 
         public void Break()
@@ -440,9 +454,9 @@ namespace ClasseSpicyNvader
         }
 
 
-        public void InitiateAlien()
+        public void InitiateAlien(bool difficulty)
         {
-            if (!menu.Difficulty)
+            if (difficulty)
             {
                 numberEnnemiesX = 6;
                 numberEnnemiesY = 4;
@@ -464,22 +478,74 @@ namespace ClasseSpicyNvader
                     alien.PositionY = Y * alien.Height + 1;
 
                     ennemies.Add(alien);
+
+                    alien.Draw();
                 }
             }
 
             line = ennemies.Max(elements => elements.Height) + ennemies.Max(elements => elements.PositionY);
         }
 
-        public void GameMusic()
-        {
-            WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();
-            wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/star wars cantina.mp3";
-        }
-
         public void EasterEgg()
         {
-            WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();
+            Console.Write(@"                                     ......................................,,,,,,,,,,,,,********///(
+                                ....              .........,.............,,,,,,,,,,,,,********/////(
+                             ....... ...             ........,,*,.....,,,,,,,,,,,,,*********/////(((
+                             ........   ....          ........,,/*/(.,.,,,,,,,,,,,*******//////(((((
+                           .      ..............................,***(##(.,,,,,,,*******//////(((((((
+                         .      .,*//****,,,,,,,,,,,,,,........,,,,*/##@&(,,,,********/////((((((###
+                       . .    ,*/////////////****,,,,,,,,.....,,,,*/#(#&&%**,******//////(((((((####
+                     ....    *////////////////*****,,,,,,,,.....,**(%@&##%/,******/////((((((((#####
+                    ... .  .,///////////////////*******,,,,,,....,//#@@%(%&&*****//////(((((((#####%
+                 ......   .,*////////////////////********,,,,,,..,,*#&@%(*#&@(**//////(((((((#####%%
+             ..  . ....  ..*////(((((/(////////////********,,,,,.,,,(@@&(/*(@@%///////((((((######%%
+        . ..... ......  .,,///((((((((((///////////********,,,,,,,,,*%@&#/*(%@@&/////((((((######%%%
+         ................,,*(((((((((((/////////////*******,,,,,,,,,,(@@%((##%@@(////(((((((####%%%%
+........      ........ ,,,**/((((((((((//////////////*****,,,,,,,,,,,,%@@%#(%&@@&////((((((#####%%%%
+   .......  . .........*****//(((((((((((/////////////*****,,,,,,,,,,*&@@&#%%&@@@////(((((######%%%%
+            . ........,**////(((((((((((((/////////////****,,,,,,,,,,*%@@&(&&@@@&///((((((######%%%%
+               .... ..,*/////(((((((((((((((/////((/////****,,,,,,,,*#@@@&(%&@@@%///((((((######%%%%
+               .    ..***//////*/((((((((((((/((*(((////***,,,,,,,,**%@@@@#%@@@&((/(((((((######%%%%
+        .....  .     .******,,,,,,...,,*//////(/**((//**,,,,..,,,,,,,/%&@@#&@&@%///((((((((#####%%%%
+      ........       ,*****//((((((((//*,,***(((*,,,,,...,**///***,,,*(%@@%%&#@(////(((((((#####%%%%
+        .......      ,*****(((/,... ...,,*/(((((/,........,,/,,,,,,,,*,*&@&(###(////((((((((####%%%%
+       ........     .,**/////*******,***//(/((((/,,.....,,*****,,,,,,,,,%@@(%&(#/////(((((((#####%%%
+     .........      .,**////(((((((/////*/(((((/**,.....,,,****,,,,,,,,,(&@#%&%(//////(((((((#####%%
+      .......       .,**//(((((####((///(((((((//*,......,,,,****,,,,,,*#@@((#/%///////(((((((#####%
+      .......      . .,*//((((((((((((##((((((((/*........,,,,,*****,,,,#@%/#/*#/////////((((((#####
+  ............      ..,*//(((((##((((((#((((((((/*.........,,,,,,,,,,,,,#@%(&*(#**/////////(((((####
+..............      ..,,*///((((((((((##((((((((/*,.........,,,,,,,,,,,,(@@@%**%****////////((((((##
+  ............   ....,,,*////(((#(((((((((((((#(//*.........,,,,,,,,,,,,#@@@#,(********///////((((((
+  ...................,,,*////(((((((((((((/**((///*,.......,,,,,,,,.**,*#&@@(*************//////((((
+   ...................,,**////((((((((((((((////**,.........,,,,,,.,*,,/#%&@,*,,*************//////(
+  ....................,,,*////(((((((((((//(((/*,(/,..........,,,..,,**/((%%,,,,,,,,***********/////
+  .....................,,**////(((/////////////,*//**,,,,.......,..,,,*//*#,,,,,,,,,,,,,*********///
+   .....................,**////((//////((((((((///**,,,,.........,.,*,**,*,,,,,,,,,,,,,,,,**********
+  .......................,**///((//////((/////*,,,,,,,,........,,,.,,,,**,,,,,,,,,,,,,,,,,,,,*******
+      ....................,***///////////////******,,,,........,,..,,,**,,,,,,,,,,,,,,,,,,,,,,,,,,**
+     .....................,,****/////////////*******,,,............,,,,(,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+        ..................,,,***////////////(//////****,,,,.........,,,//*......,,,..,,,,,,,,,,,,,,,
+             ...........   ,,,,****/////(////(/////***,,,,.........,.../& ,..............,,,,,,,,,,,
+            ...   .        ,,,,,******/////////******,,,..........,..../%% ,#,................,,,,,,
+                           ,,,,,*,*****////*****,,,,,,,,,............../#( .,(/,,/*,................
+                           ,,,**,*********,,,,,,,,,....................*(,  .///,,.,,..,*(*.........
+                           ,,,****,*********,,,,,,,,....................,.  ..*/*,,.........,*(#*...
+                           ,,*****///*////********,,,,,,...... ..........    ..,/,,..............,/(
+                            ,*****//////**/******//**,,,................    .....,*,.......,........
+                            .******////(((//********,,..,/*,,.........       .......................
+                             .*****/////((((((/**,,,,///*,,,,.....         .      ..................
+                              .*****////((((((# . ./((**,,,,.....      .. .,      ..................
+                               .****////((((( *(#/(/*,,.*,......    ..... .,          ..............
+                               .,***/////((.,..***.*,...  *.....  ...... .,,          . .*      . ..
+                               ..****///(,  .,.,,, ... .    *.......... .,**.         .  . .        
+                                .,***//, ...*/./%#*        ..,*.......  .***.                       
+                                .,**/,  ..,,/(,(&,.       ..,,***....  .,***.                       
+                                 .*, .,,,,*,*/,#%/.      ...,****,,.  ,,****.                       
+                                  .,,,,,**,.*((#/*       ...,***,,...,,,****.                       
+");
             wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/Better Call Saul Theme by Little Barrie Full Orignal Song.mp3";
+            Console.ReadKey();
+            wMPPlayer.close();
         }
 
         private void KillAlien(Laser laser, Alien alien)
@@ -502,7 +568,9 @@ namespace ClasseSpicyNvader
             Console.Write("Vie: ");
             for (int nbrLife = 0; nbrLife < player.Life; nbrLife++)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("♥");
+                Console.ResetColor();
             }
             Console.SetCursorPosition(108, 0);
             Console.Write("Spicy Nvaders");

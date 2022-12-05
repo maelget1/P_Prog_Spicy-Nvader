@@ -11,36 +11,41 @@ namespace ClasseSpicyNvader
 {
     public class Menu
     {
-        private List<int> bestScore = new List<int>();
-
+        //contient tout les caractères pour dessiner la flèche
         private static string arrow = "   ___              ¦  /  /              ¦ /  / ______ ______ ¦<  < |______|______|¦ \\  \\              ¦  \\__\\             ";
 
+        //contient la flèche découpé en partie
         private string[] subs = arrow.Split("¦");
 
-        public List<int> BestScore { get => bestScore; set => bestScore = value; }
+        //contient la difficulté choisi
+        private bool _difficulty = true;
 
-        public bool Difficulty { get => difficulty; set => difficulty = value; }
+        //contient l'information si on dois jouer la musique
+        private bool _playSong = true;
 
-        public bool Playing { get => playing; set => playing = value; }
+        //permet de savoir si il faut continuer à afficher le menu
+        private bool _playing;
 
-        private bool difficulty;
-
-        private bool playing = true;
-
+        /// <summary>
+        /// Affiche le menu de sélection
+        /// </summary>
         public void ShowMenu()
         {
+            //crée une variable pour connaître la position du curseur
             int cursorY = 7;
 
-            
+            //dit qu'il faut afficher le menu
+            _playing = true;
+
+
+            //dimensionne la console
+            Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+
+            //dimensionne la console
+            Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
 
             do
             {
-                //dimensionne la console
-                Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
-
-                //dimensionne la console
-                Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
-
                 //efface la console
                 Console.Clear();
 
@@ -153,7 +158,8 @@ namespace ClasseSpicyNvader
                         if (cursorY == 7)
                         {
                             Game game = new Game();
-                            game.StartGame();
+                            game.StartGame(_playSong, _difficulty);
+                            _playing = false;
                         }
 
                         //si sur l'option "options"
@@ -190,13 +196,18 @@ namespace ClasseSpicyNvader
                         break;
                 }
 
-            } while (Playing);
+            } while (_playing);
         }
 
+        /// <summary>
+        /// montre les informations sur le projet dans une section à part
+        /// </summary>
         public void ShowAbout()
         {
+            //efface le menu de la console
             Console.Clear();
 
+            //écrit le titre de la page
             Console.WriteLine(@"
      ___         .______   .______        ______   .______     ______        _______.
     /   \        |   _  \  |   _  \      /  __  \  |   _  \   /  __  \      /       |
@@ -206,8 +217,11 @@ namespace ClasseSpicyNvader
 /__/     \__\    | _|      | _| `._____| \______/  | _|       \______/  |_______/    
                                                                                      
 ");
+            //écrit les informations
             Console.WriteLine("Auteur: Maël Gétain\nSpicy-Nvader est un jeu qui me sers de projet programmation orienté objet. Le projet se déroule d'août à décembre 2022.");
             Console.Write("Appuyez sur n'importe quelle touche pour quitter");
+
+            //permet de quitter la page
             switch (Console.ReadKey().Key)
             {
                 default:
@@ -216,11 +230,17 @@ namespace ClasseSpicyNvader
 
         }
 
+        /// <summary>
+        /// montre les meilleurs résultat fait sur cette ordinateur
+        /// </summary>
         public void ShowHighScore()
         {
-            int cursorY = 10;
-            int nbrElements = 10;
+            //crée un tableau avec tout le contenu du fichier qui contient les résultat
+            string[] lines = System.IO.File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory + "result.txt");
+
+            //efface la console
             Console.Clear();
+
             //écrit l'onglet "meilleurs scores"
             Console.WriteLine(@"
 .___  ___.  _______  __   __       __       _______  __    __  .______          _______.        _______.  ______   ______   .______       _______     _______.
@@ -231,31 +251,217 @@ namespace ClasseSpicyNvader
 |__|  |__| |_______||__| |_______||_______||_______| \______/  | _| `._____|_______/       |_______/     \______| \______/  | _| `._____||_______|_______/    
                                                                                                                                                               
 ");
-            foreach(int elements in BestScore)
+
+            //écrit tout les éléments du tableau
+            foreach (string line in lines)
             {
-                Console.SetCursorPosition(10, nbrElements);
-                Console.WriteLine(elements);
-                nbrElements += 10;
+                Console.WriteLine(line);
             }
+
             //lis les touches cliquées
-            switch (Console.ReadKey().Key)
+            switch (Console.ReadKey(true).Key)
             {
                 default:
                     break;
-                case ConsoleKey.DownArrow:
-                    cursorY += 10;
+                case ConsoleKey.Escape:
                     break;
             }
         }
 
-        public void AddBestScore(int score)
+        /// <summary>
+        /// ajoute le score au fichier texte
+        /// </summary>
+        /// <param name="score">score du joueur</param>
+        /// <param name="name">nom du joueur</param>
+        public async void AddBestScore(int score, string name)
         {
-            BestScore.Add(score);
+            //si le fichier texte existe
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "result.txt"))
+            {
+                //créer le nouveau score
+                string text = name + " :" + score + "\n";
+
+                //écrit le score dans le fichier texte
+                await File.WriteAllTextAsync("result.txt", text);
+            }
+            // si il existe pas
+            else
+            {
+                //créer le nouveau score
+                string text = name + " :" + score + "\n";
+
+                //créer le fichier texte
+                using StreamWriter file = new("result.txt", append: true);
+
+                //écrit le score dans le fichier texte
+                await file.WriteLineAsync(text);
+            }
+
         }
 
+        /// <summary>
+        /// affiche les options du jeu
+        /// </summary>
         public void ShowSettings()
         {
-            Difficulty = false;
+            //crée une variable pour avoir l'information sur sa position
+            int cursorY = 7;
+
+            //crée une variable qui nous peremt de rester dans le menu
+            bool showSettings = true;
+
+            do
+            {
+                //efface la console
+                Console.Clear();
+
+                //écrit le titre de l'option
+                Console.Write(@"
+     _______.  ______   .__   __. 
+    /       | /  __  \  |  \ |  | 
+   |   (----`|  |  |  | |   \|  | 
+    \   \    |  |  |  | |  . `  | 
+.----)   |   |  `--'  | |  |\   | 
+|_______/     \______/  |__| \__| 
+                                  
+");
+                //écrit en vert l'option séléctionnée
+                if (_playSong)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(@"
+  ______   .__   __. 
+ /  __  \  |  \ |  | 
+|  |  |  | |   \|  | 
+|  |  |  | |  . `  | 
+|  `--'  | |  |\   | 
+ \______/  |__| \__| 
+                     
+");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(@"
+  ______    _______  _______ 
+ /  __  \  |   ____||   ____|
+|  |  |  | |  |__   |  |__   
+|  |  |  | |   __|  |   __|  
+|  `--'  | |  |     |  |     
+ \______/  |__|     |__|     
+                             
+");
+                    Console.ResetColor();
+                }
+
+                //écrit le titre de l'option
+                Console.Write(@"
+ _______   __   _______  _______  __    ______  __    __   __      .___________. _______ 
+|       \ |  | |   ____||   ____||  |  /      ||  |  |  | |  |     |           ||   ____|
+|  .--.  ||  | |  |__   |  |__   |  | |  ,----'|  |  |  | |  |     `---|  |----`|  |__   
+|  |  |  ||  | |   __|  |   __|  |  | |  |     |  |  |  | |  |         |  |     |   __|  
+|  '--'  ||  | |  |     |  |     |  | |  `----.|  `--'  | |  `----.    |  |     |  |____ 
+|_______/ |__| |__|     |__|     |__|  \______| \______/  |_______|    |__|     |_______|
+                                                                                         
+");
+                //écrit en vert l'option séléctionnée
+                if (_difficulty)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(@"
+ _______    ___       ______  __   __       _______ 
+|   ____|  /   \     /      ||  | |  |     |   ____|
+|  |__    /  ^  \   |  ,----'|  | |  |     |  |__   
+|   __|  /  /_\  \  |  |     |  | |  |     |   __|  
+|  |    /  _____  \ |  `----.|  | |  `----.|  |____ 
+|__|   /__/     \__\ \______||__| |_______||_______|
+                                                    
+");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(@"
+ _______   __   _______  _______  __    ______  __   __       _______ 
+|       \ |  | |   ____||   ____||  |  /      ||  | |  |     |   ____|
+|  .--.  ||  | |  |__   |  |__   |  | |  ,----'|  | |  |     |  |__   
+|  |  |  ||  | |   __|  |   __|  |  | |  |     |  | |  |     |   __|  
+|  '--'  ||  | |  |     |  |     |  | |  `----.|  | |  `----.|  |____ 
+|_______/ |__| |__|     |__|     |__|  \______||__| |_______||_______|
+                                                                      
+");
+                    Console.ResetColor();
+                }
+
+                //crée un compteur pour compter les cases
+                int compteur = 1;
+
+                //écrit la flèche
+                foreach (string sub in subs)
+                {
+                    Console.SetCursorPosition(160, cursorY + compteur);
+                    Console.Write(sub);
+                    compteur++;
+                }
+
+                switch (Console.ReadKey(true).Key)
+                {
+                    default:
+                        break;
+                    //flèche du bas
+                    case ConsoleKey.DownArrow:
+
+                        //si le curseur n'est pas sur le dernier choix
+                        if (cursorY < 25)
+                        {
+                            //va sur l'autre choix plus bas
+                            cursorY += 18;
+                        }
+
+                        //quitte l'action
+                        break;
+
+                    //flèche du haut
+                    case ConsoleKey.UpArrow:
+
+                        //si le curseur n'est pas sur le premier choix
+                        if (cursorY > 7)
+                        {
+                            //va sur le choix au dessus
+                            cursorY -= 18;
+                        }
+
+                        //quitte l'action
+                        break;
+
+                    //sélectionne l'option
+                    case ConsoleKey.Enter:
+                        if (cursorY == 25 && _difficulty)
+                        {
+                            _difficulty = false;
+                        }
+                        else if (cursorY == 25 && !_difficulty)
+                        {
+                            _difficulty = true;
+                        }
+                        else if (cursorY == 7 && _playSong)
+                        {
+                            _playSong = false;
+                        }
+                        else if (cursorY == 7 && !_playSong)
+                        {
+                            _playSong = true;
+                        }
+                        break;
+                    case ConsoleKey.Escape:
+                        showSettings = false;
+                        break;
+                }
+
+            } while (showSettings);
+
         }
     }
 }

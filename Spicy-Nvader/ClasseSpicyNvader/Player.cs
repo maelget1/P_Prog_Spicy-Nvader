@@ -3,7 +3,7 @@
     public class Player : Entity
     {
 
-        public string name;
+        private string name;
 
         private int score;
 
@@ -11,7 +11,7 @@
         {
             Skin = @"      ▄      ¦     ███     ¦▄███████████▄¦█████████████¦█████████████";
 
-            this.name = name;
+            this.Name = name;
 
             Score = 0;
 
@@ -27,6 +27,7 @@
         }
 
         public int Score { get => score; set => score = value; }
+        public string Name { get => name; set => name = value; }
 
         public Laser Attack()
         {
