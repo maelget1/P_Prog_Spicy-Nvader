@@ -328,7 +328,7 @@ namespace ClasseSpicyNvader
             }
         }
 
-        public void GameOver()
+        private void GameOver()
         {
             Console.Clear();
 
@@ -374,7 +374,7 @@ namespace ClasseSpicyNvader
             }
         }
 
-        public void Break()
+        private void Break()
         {
             cursorBreak = 20;
 
@@ -449,13 +449,13 @@ namespace ClasseSpicyNvader
             
         }
 
-        public void Resume()
+        private void Resume()
         {
             PlayGame();
         }
 
 
-        public void InitiateAlien(bool difficulty)
+        private void InitiateAlien(bool difficulty)
         {
             if (difficulty)
             {
@@ -485,7 +485,7 @@ namespace ClasseSpicyNvader
             line = ennemies.Max(elements => elements.Height) + ennemies.Max(elements => elements.PositionY);
         }
 
-        public void EasterEgg()
+        private void EasterEgg()
         {
             Console.Write(@"                                     ......................................,,,,,,,,,,,,,********///(
                                 ....              .........,.............,,,,,,,,,,,,,********/////(
@@ -577,7 +577,7 @@ namespace ClasseSpicyNvader
             Console.Write("Score: " + player.Score);
         }
 
-        public void InitiateWall()
+        private void InitiateWall()
         {
             walls.Add(wall1);
             walls.Add(wall2);
@@ -608,7 +608,7 @@ namespace ClasseSpicyNvader
         /// </summary>
         /// <param name="score">score du joueur</param>
         /// <param name="name">nom du joueur</param>
-        public async void AddBestScore(int score, string name)
+        private async void AddBestScore(int score, string name)
         {
             //si le fichier texte existe
             if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "result.txt"))
