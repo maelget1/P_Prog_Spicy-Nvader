@@ -8,27 +8,47 @@ namespace TestSpicyNvader
         [TestMethod]
         public void goRightTest()
         {
-            Player player = new Player("Kevin", 0, 0, 0);
+            Player player = new Player("test", 0, 0, 0);
+            bool succes;
 
-            player.GoRight();
+            try
+            {
+                player.GoRight();
+                succes = true;
+            }
+            catch
+            {
+                succes = false;
+            }
 
-            Assert.AreEqual(1, player.PositionX);
+
+            Assert.IsTrue(succes);
         }
 
         [TestMethod]
         public void goLeftTest()
         {
-            Player player = new Player("Kevin", 4, 0, 0);
+            Player player = new Player("test", 4, 0, 0);
+            bool succes;
 
-            player.GoLeft();
+            try
+            {
+                player.GoLeft();
+                succes = true;
+            }
+            catch
+            {
+                succes = false;
+            }
+            
 
-            Assert.AreEqual(3, player.PositionX);
+            Assert.IsTrue(succes);
         }
 
         [TestMethod]
         public void goLeftTest2()
         {
-            Player player = new Player("Quentin", 0, 0, 0);
+            Player player = new Player("test", 0, 0, 0);
 
             player.GoLeft();
 

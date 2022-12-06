@@ -3,15 +3,15 @@
     public class Player : Entity
     {
 
-        private string name;
+        private string _name;
 
-        private int score;
+        private int _score;
 
         public Player(string name, int positionX, int positionY, byte life)
         {
             Skin = @"      ▄      ¦     ███     ¦▄███████████▄¦█████████████¦█████████████";
 
-            this.Name = name;
+            Name = name;
 
             Score = 0;
 
@@ -26,8 +26,8 @@
             Height = Skin.Split("¦").Length;
         }
 
-        public int Score { get => score; set => score = value; }
-        public string Name { get => name; set => name = value; }
+        public int Score { get => _score; set => _score = value; }
+        public string Name { get => _name; set => _name = value; }
 
         public Laser Attack()
         {
