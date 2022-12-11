@@ -22,7 +22,6 @@ namespace ClasseSpicyNvader
         bool playing;
         Player player;
         Random random = new Random();
-        Menu menu = new Menu();
         Wall wall1 = new Wall(30, 50);
         Wall wall2 = new Wall(100, 50);
         Wall wall3 = new Wall(150, 50);
@@ -35,6 +34,11 @@ namespace ClasseSpicyNvader
         Timer timerLaserEnnemies;
         WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();
 
+        /// <summary>
+        /// instancie les éléments pour démarrer la partie
+        /// </summary>
+        /// <param name="sound">son oui ou non</param>
+        /// <param name="difficulty">difficulté dur ou facile</param>
         public void InitiateGame(bool sound, bool difficulty)
         {
             //efface la console
@@ -74,43 +78,65 @@ namespace ClasseSpicyNvader
                 player = new Player(name, 107, 56, 3);
             }
 
+            //dit que le jeu est en marche
             playing = true;
 
+            //initialise les aliens en fonction de la difficulté
             InitiateAlien(difficulty);
 
+            //si le son est sur "on"
             if (sound)
             {
+                //lance la musique de jeu
                 wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/star wars cantina.mp3";
             }
         }
 
+        /// <summary>
+        /// partie qui va intéragir avec l'utilisateur et changer en cours de partie 
+        /// </summary>
         public void PlayGame()
         {
+            //efface la console
             Console.Clear();
 
+            //écrit les murs
             InitiateWall();
 
+            //affiche les stats du joueur (vie et points)
             Stats(player);
 
+            //dessine tout les laser tiré par les ennemies
             foreach (Laser laser in lasersAlien)
             {
                 laser.Draw();
             }
 
+            //dessine tout les lasers de l'utilisateur
             foreach(Laser laser in lasersPlayer)
             {
                 laser.Draw();
             }
 
+            //dessine le vaisseau
             player.Draw();
 
+            //instancie le timer avec comme action le mouvement des aliens
             timerAlien = new Timer(new TimerCallback(ActionEnemies));
+
+            //change les batements du timer
             timerAlien.Change(0, 200);
 
+            //instancie le timer avec comme action le mouvement des lasers du joueur
             timerLaserPlayer = new Timer(new TimerCallback(LaserMovementPlayer));
+
+            //change les batements du timer
             timerLaserPlayer.Change(0, 50);
 
+            //instancie le timer avec comme action le mouvement des lasers des aliens
             timerLaserEnnemies = new Timer(new TimerCallback(LaserMovementEnnemies));
+
+            //change les batements du timer
             timerLaserEnnemies.Change(0, 100);
 
             //le fait tant que c'est pas fini
@@ -166,66 +192,110 @@ namespace ClasseSpicyNvader
             } while (playing);
         }
 
+        /// <summary>
+        /// appelle l'instanciation et l'action de jeu
+        /// </summary>
+        /// <param name="sound">son oui ou non</param>
+        /// <param name="difficulty">difficulté dur ou facile</param>
         public void StartGame(bool sound, bool difficulty)
         {
             InitiateGame(sound, difficulty);
             PlayGame();
         }
 
+        /// <summary>
+        /// déplacement des ennemies
+        /// </summary>
+        /// <param name="state"></param>
         private void ActionEnemies(object state)
         {
+            //si il y a des ennemies
             if(ennemies.Count != 0)
             {
+                //pour savoir si les aliens doivent descendre
                 bool down = false;
+
+                //calcule la coordonnée x du 1 er alien
                 int minX = ennemies.Min(elements => elements.PositionX);
+
+                //calcule la coordonnée x du dernier alien de la liste
                 int bigX = ennemies.Max(elements => elements.PositionX);
+
+                //calcule la coordonnée x de fin de la liste d'alien
                 bigX = bigX + ennemies.Max(elements => elements.Width);
-                int minY = ennemies.Max(elements => elements.PositionY);
+
+                //calcule la coordonnée y du dernier alien de la liste
                 int bigY = ennemies.Max(elements => elements.Height);
+
+                //calcule la coordonnée y de fin de la liste d'alien
                 bigY = bigY + ennemies.Max(elements => elements.PositionY);
+
+                //fait l'action pour tous les ennemies
                 foreach (Alien element in ennemies.ToArray())
                 {
+                    //dessine l'ennemi
                     element.Draw();
+
+                    //prend un chiffre entre 0 et 19
                     randomAlien = random.Next(0, 20);
+
+                    //si il est toujours dans la fenêtre par rapport à la droite
                     if (minX <= 240 - (element.Width * ((bigX-minX) / element.Width)) && line % 2 == 1)
                     {
+                        //si il touche le bord il descend
                         if (minX == 240 - (element.Width * ((bigX - minX) / element.Width)))
                         {
                             element.MoveDown();
                             down = true;
                         }
+                        //sinon ils continuent d'aller à droite
                         else
                         {
                             element.MoveRight();
+
+                            //si il est sur la dernière liste et que le random l'a choisi
                             if (element.PositionY + element.Height == bigY && randomAlien == 3)
                             {
+                                //il tire
                                 lasersAlien.Add(element.Attack());
                             }
                         }
                     }
+                    //si il est toujours dans les limites par rapport à la gauche
                     else if (bigX >= element.Width * ((bigX - minX) / element.Width) && line % 2 == 0)
                     {
+                        //si il touche le bord
                         if (minX == 0)
                         {
+                            //descend les aliens
                             element.MoveDown();
                             down = true;
                         }
+                        //sinon
                         else
                         {
+                            //va à gauche
                             element.MoveLeft();
+
+                            //si il est sur la dernière liste et que le random l'a choisi
                             if (element.PositionY + element.Height == bigY && randomAlien == 3)
                             {
+                                //il tire
                                 lasersAlien.Add(element.Attack());
                             }
                         }
                     }
+
+                    //le fait pour tout les aliens du joueur
                     foreach (Laser laser in lasersPlayer.ToArray())
                     {
+                        //si le laser est à la même place qu'un alien alors il meurt
                         if (element.PositionX <= laser.PositionX && element.PositionX + element.Width >= laser.PositionX && element.PositionY <= laser.PositionY && element.PositionY + element.Height >= laser.PositionY)
                         {
                             KillAlien(laser, element);
                         }
                     }
+                    //si les aliens touchent le bas alors on perd
                     if (line == 50)
                     {
                         GameOver();
@@ -237,12 +307,17 @@ namespace ClasseSpicyNvader
                 }
 
             }
+            //si il n'y a plus d'alien fin de partie
             else
             {
                 GameOver();
             }
         }
 
+        /// <summary>
+        /// mouvement des lasers du joueur
+        /// </summary>
+        /// <param name="state"></param>
         private void LaserMovementPlayer(object state)
         {
             foreach(Laser laser in lasersPlayer.ToArray())
