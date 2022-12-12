@@ -251,6 +251,8 @@ namespace ClasseSpicyNvader
             //crée un tableau avec tout le contenu du fichier qui contient les résultat
             string[] lines = System.IO.File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory + "result.txt");
 
+            int compteur = 0;
+
             //efface la console
             Console.Clear();
 
@@ -268,7 +270,11 @@ namespace ClasseSpicyNvader
             //écrit tout les éléments du tableau
             foreach (string line in lines)
             {
-                Console.WriteLine(line);
+                if(compteur < 30)
+                {
+                    Console.WriteLine(line);
+                }
+                compteur++;
             }
 
             //lis les touches cliquées

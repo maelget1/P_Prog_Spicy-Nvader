@@ -41,10 +41,5 @@ namespace ClasseSpicyNvader
         {
             Console.MoveBufferArea(PositionX, PositionY, Width, Height, PositionX, ++PositionY);
         }
-
-        public void Erase()
-        {
-            Console.MoveBufferArea(0, 52, Width, Height, PositionX, PositionY);
-        }
     }
 }

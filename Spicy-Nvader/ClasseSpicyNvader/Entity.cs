@@ -8,41 +8,41 @@ namespace ClasseSpicyNvader
 {
     public class Entity
     {
-        private string skin;
+        private string _skin;
 
-        private int positionX;
+        private int _positionX;
 
-        private int positionY;
+        private int _positionY;
 
-        private byte life;
+        private byte _life;
 
-        private int width;
+        private int _width;
 
-        private int height;
+        private int _height;
 
-        public string Skin { get => skin; set => skin = value; }
-        public int PositionX { get => positionX; set => positionX = value; }
-        public int PositionY { get => positionY; set => positionY = value; }
-        public byte Life { get => life; set => life = value; }
-        public int Width { get => width; set => width = value; }
-        public int Height { get => height; set => height = value; }
+        public string Skin { get => _skin; set => _skin = value; }
+        public int PositionX { get => _positionX; set => _positionX = value; }
+        public int PositionY { get => _positionY; set => _positionY = value; }
+        public byte Life { get => _life; set => _life = value; }
+        public int Width { get => _width; set => _width = value; }
+        public int Height { get => _height; set => _height = value; }
 
         public string Draw()
         {
             int compteur = 0;
-            string[] subs = skin.Split('¦');
+            string[] subs = _skin.Split('¦');
             foreach(string s in subs)
             {
-                Console.SetCursorPosition(PositionX, PositionY + compteur);
+                Console.SetCursorPosition(_positionX, _positionY + compteur);
                 Console.Write(s);
                 compteur++;
             }
-            return skin;
+            return _skin;
         }
 
         public void Erase()
         {
-            Console.MoveBufferArea(0, 52, Width, Height, PositionX, PositionY);
+            Console.MoveBufferArea(0, 52, _width, _height, _positionX, _positionY);
         }
     }
 }

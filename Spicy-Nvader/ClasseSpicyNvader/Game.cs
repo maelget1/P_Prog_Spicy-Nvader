@@ -332,7 +332,7 @@ namespace ClasseSpicyNvader
                     laser.MovePlayer();
                     foreach (Wall wall in walls.ToArray())
                     {
-                        if (wall.PositionX <= laser.PositionX && wall.PositionX + wall.Width >= laser.PositionX && wall.PositionY <= laser.PositionY && wall.PositionY + wall.Height >= laser.PositionY)
+                        if (wall.PositionX <= laser.PositionX && wall.PositionX + wall.Width >= laser.PositionX && wall.PositionY <= laser.PositionY && wall.PositionY + wall.Height >= laser.PositionY && wall.Life != 0)
                         {
                             lasersPlayer.Remove(laser);
                             laser.Erase();
@@ -685,28 +685,30 @@ namespace ClasseSpicyNvader
         /// <param name="name">nom du joueur</param>
         private async void AddBestScore(int score, string name)
         {
-            //si le fichier texte existe
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "result.txt"))
+            if(player.Score != 0)
             {
-                //créer le nouveau score
-                string text = name + " :" + score + "\n";
+                //si le fichier texte existe
+                if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "result.txt"))
+                {
+                    //créer le nouveau score
+                    string text = name + " :" + score + "\n";
 
-                //écrit le score dans le fichier texte
-                await File.WriteAllTextAsync("result.txt", text);
+                    //écrit le score dans le fichier texte
+                    await File.WriteAllTextAsync("result.txt", text);
+                }
+                // si il existe pas
+                else
+                {
+                    //créer le nouveau score
+                    string text = name + " :" + score + "\n";
+
+                    //créer le fichier texte
+                    using StreamWriter file = new("result.txt", append: true);
+
+                    //écrit le score dans le fichier texte
+                    await file.WriteLineAsync(text);
+                }
             }
-            // si il existe pas
-            else
-            {
-                //créer le nouveau score
-                string text = name + " :" + score + "\n";
-
-                //créer le fichier texte
-                using StreamWriter file = new("result.txt", append: true);
-
-                //écrit le score dans le fichier texte
-                await file.WriteLineAsync(text);
-            }
-
         }
     }
 }

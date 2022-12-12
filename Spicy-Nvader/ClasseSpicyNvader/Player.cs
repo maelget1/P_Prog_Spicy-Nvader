@@ -58,7 +58,7 @@
 
         public void AddScore()
         {
-            Score += 100;
+            _score += 100;
         }
     }
 }
