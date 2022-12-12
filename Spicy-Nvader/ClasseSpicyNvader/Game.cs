@@ -88,7 +88,7 @@ namespace ClasseSpicyNvader
             if (sound)
             {
                 //lance la musique de jeu
-                wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/star wars cantina.mp3";
+                wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/cantina.mp3";
             }
         }
 
@@ -617,7 +617,7 @@ namespace ClasseSpicyNvader
                                  .*, .,,,,*,*/,#%/.      ...,****,,.  ,,****.                       
                                   .,,,,,**,.*((#/*       ...,***,,...,,,****.                       
 ");
-            wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/Better Call Saul Theme by Little Barrie Full Orignal Song.mp3";
+            wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/easterEgg.mp3";
             Console.ReadKey();
             wMPPlayer.close();
         }
@@ -709,6 +709,7 @@ namespace ClasseSpicyNvader
                     await file.WriteLineAsync(text);
                 }
             }
+
         }
     }
 }
