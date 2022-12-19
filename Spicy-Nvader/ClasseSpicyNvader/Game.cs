@@ -12,27 +12,22 @@ namespace ClasseSpicyNvader
     public class Game
     {
         //////////////////////////////////////////////////variables//////////////////////////////////////////////////
-        string name;
-        int line;
-        int numberEnnemiesX;
-        int numberEnnemiesY;
-        int cursorBreak;
-        bool quitOrStart;
-        int randomAlien;
-        bool playing;
-        Player player;
-        Random random = new Random();
-        Wall wall1 = new Wall(30, 50);
-        Wall wall2 = new Wall(100, 50);
-        Wall wall3 = new Wall(150, 50);
-        List<Alien> ennemies = new List<Alien>();
-        List<Laser> lasersPlayer = new List<Laser>();
-        List<Wall> walls = new List<Wall>();
-        List<Laser> lasersAlien = new List<Laser>();
-        Timer timerAlien;
-        Timer timerLaserPlayer;
-        Timer timerLaserEnnemies;
-        WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();
+        string name;                                                        //nom du joueur
+        int line;                                                           //coordonée y du dernier alien                                              
+        bool playing;                                                       //permet de savoir si on continue de jouer
+        Player player;                                                      //joueur de la partie
+        Random random = new Random();                                       //instancie un random
+        Wall wall1 = new Wall(30, 50);                                      //instancie le mur 1
+        Wall wall2 = new Wall(100, 50);                                     //instancie le mur 2
+        Wall wall3 = new Wall(150, 50);                                     //instancie le mur 3
+        List<Alien> ennemies = new List<Alien>();                           //créer une liste d'ennemis
+        List<Laser> lasersPlayer = new List<Laser>();                       //créer une liste de laser ennemis
+        List<Wall> walls = new List<Wall>();                                //créer une liste de mur
+        List<Laser> lasersAlien = new List<Laser>();                        //créer une liste de laser pour le joueur
+        Timer timerAlien;                                                   //créer un timer pour les mouvements des aliens
+        Timer timerLaserPlayer;                                             //créer un timer pour les mouvements des lasers du joueur
+        Timer timerLaserEnnemies;                                           //créer un timer pour les mouvements des lasers ennemis
+        WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();            //instancie un joueur de musique
 
         /// <summary>
         /// instancie les éléments pour démarrer la partie
@@ -237,7 +232,7 @@ namespace ClasseSpicyNvader
                     element.Draw();
 
                     //prend un chiffre entre 0 et 19
-                    randomAlien = random.Next(0, 20);
+                    int randomAlien = random.Next(0, 20);
 
                     //si il est toujours dans la fenêtre par rapport à la droite
                     if (minX <= 240 - (element.Width * ((bigX-minX) / element.Width)) && line % 2 == 1)
@@ -322,6 +317,7 @@ namespace ClasseSpicyNvader
         {
             foreach(Laser laser in lasersPlayer.ToArray())
             {
+                //efface le laser si il touche le ciel
                 if(laser.PositionY == 1)
                 {
                     lasersPlayer.Remove(laser);
@@ -329,14 +325,21 @@ namespace ClasseSpicyNvader
                 }
                 else
                 {
+                    //bouge le laser
                     laser.MovePlayer();
                     foreach (Wall wall in walls.ToArray())
                     {
+                        //si il tir sur un mur
                         if (wall.PositionX <= laser.PositionX && wall.PositionX + wall.Width >= laser.PositionX && wall.PositionY <= laser.PositionY && wall.PositionY + wall.Height >= laser.PositionY && wall.Life != 0)
                         {
+                            //efface le laser
                             lasersPlayer.Remove(laser);
                             laser.Erase();
+
+                            //mets des degats
                             wall.TakeDamage(walls);
+
+                            //redessine le mur avec la bonne couleur
                             if (wall.Life == 2)
                             {
                                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -355,18 +358,29 @@ namespace ClasseSpicyNvader
             }
         }
 
+        /// <summary>
+        /// mouvement des laser des aliens
+        /// </summary>
+        /// <param name="state"></param>
         private void LaserMovementEnnemies(object state)
         {
             foreach (Laser laser in lasersAlien.ToArray())
             {
+                //bouge le laser
                 laser.MoveAlien();
                 foreach (Wall wall in walls.ToArray())
                 {
+                    //si il touche le mur
                     if (wall.PositionX <= laser.PositionX && wall.PositionX + wall.Width >= laser.PositionX && wall.PositionY <= laser.PositionY && wall.PositionY + wall.Height >= laser.PositionY)
                     {
+                        //efface le laser
                         lasersAlien.Remove(laser);
                         laser.Erase();
+
+                        //mets des dégats
                         wall.TakeDamage(walls);
+
+                        //redessine le mur avec la bonne couleur
                         if (wall.Life == 2)
                         {
                             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -380,18 +394,27 @@ namespace ClasseSpicyNvader
                             Console.ResetColor();
                         }
                     }
+                    // si il touche le sol il supprime le laser
                     else if (laser.PositionY > 62)
                     {
                         lasersAlien.Remove(laser);
                     }
                 }
+                //si c'est la même position que le joueur
                 if (laser.PositionX >= player.PositionX && laser.PositionX <= player.PositionX + player.Width && laser.PositionY >= player.PositionY && laser.PositionY <= player.PositionY + player.Height)
                 {
+                    //enlève le laser
                     lasersAlien.Remove(laser);
                     laser.Erase();
+
+                    //enlève un point de vie
                     player.LoseLife();
+
+                    //affiche les stats et redessine le joueur
                     Stats(player);
                     player.Draw();
+
+                    //si plus de vie alors fin de partie
                     if (player.Life == 0)
                     {
                         GameOver();
@@ -403,32 +426,48 @@ namespace ClasseSpicyNvader
             }
         }
 
+        /// <summary>
+        /// fin du jeu
+        /// </summary>
         private void GameOver()
         {
+            //efface l'écran
             Console.Clear();
 
+            //arrête la musique
             wMPPlayer.close();
 
+            //arrête le jeu
             playing = false;
 
+            //arrête les mouvements des aliens
             timerAlien.Dispose();
 
+            //arrête les mouvements des laser aliens
             timerLaserEnnemies.Dispose();
 
+            //arrête les mouvements de nos lasers
             timerLaserPlayer.Dispose();
 
+            //vide la liste d'ennemis
             ennemies.Clear();
 
+            //vide la liste de laser
             lasersAlien.Clear();
 
+            //vide la liste de laser du joueur
             lasersPlayer.Clear();
 
+            //vide la liste de mur
             walls.Clear();
 
+            //ajoute le meilleur score
             AddBestScore(player.Score, player.Name);
 
+            //place le curseur
             Console.SetCursorPosition(Console.LargestWindowWidth / 2,0);
 
+            //titre de la fenêtre
             Console.Write(@"                                                                 
   _______      ___      .___  ___.  _______      ______   ____    ____  _______ .______      
  /  _____|    /   \     |   \/   | |   ____|    /  __  \  \   \  /   / |   ____||   _  \     
@@ -438,37 +477,51 @@ namespace ClasseSpicyNvader
  \______| /__/     \__\ |__|  |__| |_______|    \______/      \__/     |_______|| _| `._____|
                                                                                              
 ");
+            //message de victoire
             Console.WriteLine("Bravo " + player.Name + " vous vous êtes bien battu. Votre score est de " + player.Score + " points");
+
+            //petite pause
             Thread.Sleep(1000);
+
+            //message de sortie
             Console.Write("Appuyez sur n'importe quelle touche pour quitter");
 
-            switch (Console.ReadKey(true).Key)
-            {
-                default:
-                    break;
-            }
+            //attends un clique pour quitter
+            Console.ReadKey(true);
         }
 
+        /// <summary>
+        /// mets le jeu en pause
+        /// </summary>
         private void Break()
         {
-            cursorBreak = 20;
+            //place le curseur
+            int cursorBreak = 20;
 
-            quitOrStart = false;
+            //mets que l'utilisateur reste dans la fenêtre de pause
+            bool quitOrStart = false;
 
             do
             {
+                //stop le mouvement des aliens
                 timerAlien.Dispose();
 
+                //stop le mouvement des lasers des aliens
                 timerLaserEnnemies.Dispose();
 
+                ////stop le mouvement de nos lasers
                 timerLaserPlayer.Dispose();
 
+                //vide la liste de mur
                 walls.Clear();
 
+                //efface l'écran
                 Console.Clear();
 
+                //place le curseur
                 Console.SetCursorPosition(Console.LargestWindowWidth / 2, 0);
 
+                //titre fenêtre
                 Console.Write(@"
 .______   .______       _______     ___       __  ___ 
 |   _  \  |   _  \     |   ____|   /   \     |  |/  / 
@@ -478,16 +531,22 @@ namespace ClasseSpicyNvader
 |______/  | _| `._____||_______/__/     \__\ |__|\__\ 
                                                       
 ");
+                //place sous-titre
                 Console.SetCursorPosition(0, 20);
 
+                //écrit sous-titre
                 Console.WriteLine("Reprendre");
 
+                //place sous-titre
                 Console.SetCursorPosition(0, 40);
 
+                //écrit sous-titre
                 Console.WriteLine("Quitter");
 
+                //place la flèche
                 Console.SetCursorPosition(20, cursorBreak);
 
+                //écrit la flèche
                 Console.Write("<--");
 
                 //lis les touches cliquées
@@ -524,44 +583,58 @@ namespace ClasseSpicyNvader
             
         }
 
+        /// <summary>
+        /// reprend la partie
+        /// </summary>
         private void Resume()
         {
+            //continue le jeu
             PlayGame();
         }
 
-
+        /// <summary>
+        /// initialise les aliens
+        /// </summary>
+        /// <param name="difficulty"></param>
         private void InitiateAlien(bool difficulty)
         {
+            int numberEnnemiesX;
+            int numberEnnemiesY;
+
+            //si la difficulté est padawan
             if (difficulty)
             {
                 numberEnnemiesX = 6;
                 numberEnnemiesY = 4;
             }
+            //si elle est jedi. plus d'ennemis
             else
             {
                 numberEnnemiesX = 10;
                 numberEnnemiesY = 5;
             }
 
+            //créer les aliens les mets dans la liste et les places
             for (int X = 0; X < numberEnnemiesX; X++)
             {
                 for (int Y = 0; Y < numberEnnemiesY; Y++)
-                { 
-                    Alien alien = new Alien();
-
-                    alien.PositionX = X * alien.Width + 5;
-
-                    alien.PositionY = Y * alien.Height + 1;
+                {
+                    Alien alien = new Alien(X, Y);
 
                     ennemies.Add(alien);
                 }
             }
 
+            //pour connaître la position y de la dernière ligne d'aliens
             line = ennemies.Max(elements => elements.Height) + ennemies.Max(elements => elements.PositionY);
         }
 
+        /// <summary>
+        /// permet de jouer l'easterEgg de Saul
+        /// </summary>
         private void EasterEgg()
         {
+            //dessine Saul
             Console.Write(@"                                     ......................................,,,,,,,,,,,,,********///(
                                 ....              .........,.............,,,,,,,,,,,,,********/////(
                              ....... ...             ........,,*,.....,,,,,,,,,,,,,*********/////(((
@@ -617,46 +690,92 @@ namespace ClasseSpicyNvader
                                  .*, .,,,,*,*/,#%/.      ...,****,,.  ,,****.                       
                                   .,,,,,**,.*((#/*       ...,***,,...,,,****.                       
 ");
+
+            //lance la musique de la série
             wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/easterEgg.mp3";
+
+            //attends un clique
             Console.ReadKey();
+
+            //arrête la musique
             wMPPlayer.close();
         }
 
+        /// <summary>
+        /// tue un alien précis et efface le laser qui a tué l'alien
+        /// </summary>
+        /// <param name="laser"></param>
+        /// <param name="alien"></param>
         private void KillAlien(Laser laser, Alien alien)
         {
+            //tue l'alien
             ennemies.Remove(alien);
+
+            //supprime le laser
             lasersPlayer.Remove(laser);
+
+            //efface le laser
             laser.Erase();
+
+            //efface l'alien
             alien.Erase();
+
+            //ajoute des points
             player.AddScore();
+
+            //affiche les nouvelles stats
             Stats(player);
         }
 
+        /// <summary>
+        /// affiche les statistiques du joueurs (donc la première ligne de la console)
+        /// </summary>
+        /// <param name="player"></param>
         private void Stats(Player player)
         {
+            //efface les coeurs si ils existent
             for(int i = 5; i <= 7; i++)
             {
                 Console.MoveBufferArea(30, 0, 1, 1, i, 0);
             }
+            
+            //place le curseur
             Console.SetCursorPosition(0, 0);
+
+            //écrit le points de vie
             Console.Write("Vie: ");
             for (int nbrLife = 0; nbrLife < player.Life; nbrLife++)
             {
+                //couleur rouge
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("♥");
                 Console.ResetColor();
             }
+
+            //place le curseur
             Console.SetCursorPosition(108, 0);
+
+            //titre
             Console.Write("Spicy Nvaders");
+
+            //place le curseur
             Console.SetCursorPosition(220, 0);
+
+            //score du joueur
             Console.Write("Score: " + player.Score);
         }
 
+        /// <summary>
+        /// va initialiser tout les murs avec les bon points de vie
+        /// </summary>
         private void InitiateWall()
         {
+            //ajoute les murs à la liste
             walls.Add(wall1);
             walls.Add(wall2);
             walls.Add(wall3);
+
+            //dessine tout les murs avec la bonne couleur
             foreach(Wall wall in walls)
             {
                 if(wall.Life == 2)

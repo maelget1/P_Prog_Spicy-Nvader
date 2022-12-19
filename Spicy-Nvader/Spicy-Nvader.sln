@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spicy-Nvader", "Spicy-Nvader\Spicy-Nvader.csproj", "{ED379605-22CA-496B-AB83-827E6B9D775C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spicy-Nvader", "Spicy-Nvader\Spicy-Nvader.csproj", "{ED379605-22CA-496B-AB83-827E6B9D775C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClasseSpicyNvader", "ClasseSpicyNvader\ClasseSpicyNvader.csproj", "{44DC63B0-BABF-4CB7-8089-F5D0827468B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClasseSpicyNvader", "ClasseSpicyNvader\ClasseSpicyNvader.csproj", "{44DC63B0-BABF-4CB7-8089-F5D0827468B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSpicyNvader", "TestSpicyNvader\TestSpicyNvader.csproj", "{9F6226B2-D35D-47F5-9890-385F99C7843E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSpicyNvader", "TestSpicyNvader\TestSpicyNvader.csproj", "{9F6226B2-D35D-47F5-9890-385F99C7843E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

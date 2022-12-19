@@ -8,16 +8,22 @@ namespace ClasseSpicyNvader
 {
     public class Entity
     {
+        //style de l'entitée
         private string _skin;
 
+        //positionX de l'entitée
         private int _positionX;
 
+        //positionY de l'entitée
         private int _positionY;
 
+        //nombre de vie de l'entitée
         private byte _life;
 
+        //largeur de l'entitée
         private int _width;
 
+        //hauteur de l'entitée
         private int _height;
 
         public string Skin { get => _skin; set => _skin = value; }
@@ -27,6 +33,10 @@ namespace ClasseSpicyNvader
         public int Width { get => _width; set => _width = value; }
         public int Height { get => _height; set => _height = value; }
 
+        /// <summary>
+        /// dessine les entitées grâce à la variable _skin
+        /// </summary>
+        /// <returns></returns>
         public string Draw()
         {
             int compteur = 0;
@@ -40,6 +50,9 @@ namespace ClasseSpicyNvader
             return _skin;
         }
 
+        /// <summary>
+        /// efface l'entitée en deplaçant du noir dessus
+        /// </summary>
         public void Erase()
         {
             Console.MoveBufferArea(0, 52, _width, _height, _positionX, _positionY);

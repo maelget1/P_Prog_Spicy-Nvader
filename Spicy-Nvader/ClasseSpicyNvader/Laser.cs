@@ -8,21 +8,35 @@ namespace ClasseSpicyNvader
 {
     public class Laser : Entity
     {   
+        /// <summary>
+        /// constructeur de la classe
+        /// </summary>
+        /// <param name="positionX"></param>
+        /// <param name="positionY"></param>
         public Laser(int positionX, int positionY)
         {
+            //largeur de l'entitée
             Width = 1;
 
+            //hauteur de l'entitée
             Height = 1;
 
+            //style de l'entitée
             Skin = "|";
 
+            //positionX de l'entitée
             PositionX = positionX;
 
+            //positionY de l'entitée
             PositionY = positionY;
 
+            //dessine le laser
             Draw();
         }
 
+        /// <summary>
+        /// bouge les lasers des aliens
+        /// </summary>
         public void MoveAlien()
         {
             if (PositionY < 62)
@@ -35,6 +49,9 @@ namespace ClasseSpicyNvader
             }
         }
 
+        /// <summary>
+        /// bouge les lasers du joueurs
+        /// </summary>
         public void MovePlayer()
         {
             if(PositionY > 1)
