@@ -28,6 +28,7 @@ namespace ClasseSpicyNvader
         Timer timerLaserPlayer;                                             //créer un timer pour les mouvements des lasers du joueur
         Timer timerLaserEnnemies;                                           //créer un timer pour les mouvements des lasers ennemis
         WindowsMediaPlayer wMPPlayer = new WindowsMediaPlayer();            //instancie un joueur de musique
+        
 
         /// <summary>
         /// instancie les éléments pour démarrer la partie
@@ -38,6 +39,9 @@ namespace ClasseSpicyNvader
         {
             //efface la console
             Console.Clear();
+
+            //set le fichier dans lequel se trouve les musiques
+            Directory.SetCurrentDirectory(@"..\..\..\ressources\");
 
             //place le curseur au milieu de l'écran
             Console.SetCursorPosition(Console.LargestWindowWidth / 2, Console.LargestWindowHeight / 2);
@@ -83,7 +87,7 @@ namespace ClasseSpicyNvader
             if (sound)
             {
                 //lance la musique de jeu
-                wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/cantina.mp3";
+                wMPPlayer.URL = Directory.GetCurrentDirectory() + @"\cantina.wav";
             }
         }
 
@@ -692,7 +696,7 @@ namespace ClasseSpicyNvader
 ");
 
             //lance la musique de la série
-            wMPPlayer.URL = AppDomain.CurrentDomain.BaseDirectory + @"/easterEgg.mp3";
+            wMPPlayer.URL = Directory.GetCurrentDirectory() + @"\easterEgg.wav";
 
             //attends un clique
             Console.ReadKey();
