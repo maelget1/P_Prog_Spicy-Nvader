@@ -40,8 +40,13 @@ namespace ClasseSpicyNvader
             //efface la console
             Console.Clear();
 
-            //set le fichier dans lequel se trouve les musiques
-            Directory.SetCurrentDirectory(@"..\..\..\ressources\");
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+
+            if (sound)
+            {
+                //set le fichier dans lequel se trouve les musiques
+                Directory.SetCurrentDirectory(@"..\..\..\ressources\");
+            }    
 
             //place le curseur au milieu de l'écran
             Console.SetCursorPosition(Console.LargestWindowWidth / 2, Console.LargestWindowHeight / 2);
