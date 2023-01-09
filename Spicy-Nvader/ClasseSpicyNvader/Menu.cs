@@ -52,6 +52,8 @@ namespace ClasseSpicyNvader
                 //efface la console
                 Console.Clear();
 
+                Console.Write("V1.0");
+
                 //titre
                 Console.WriteLine(@"
      _______..______    __    ______ ____    ____      .__   __. ____    ____  ___       _______   _______ .______      
